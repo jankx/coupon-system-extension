@@ -8,6 +8,15 @@ class CouponPostType
     public function register(): void
     {
         add_action('init', [$this, 'registerPostType']);
+        add_filter('use_block_editor_for_post_type', [$this, 'disableGutenberg'], 10, 2);
+    }
+
+    public function disableGutenberg(string $enabled, string $postType): bool
+    {
+        if ($postType === self::POST_TYPE) {
+            return false;
+        }
+        return $enabled;
     }
 
     public function registerPostType(): void
