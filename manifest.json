@@ -1,0 +1,17 @@
+{
+    "name": "Coupon System",
+    "version": "1.0.0",
+    "description": "Hệ thống mã giảm giá cho website đặt tour du lịch Nobitour.",
+    "author": "Jankx",
+    "extension_id": "coupon-system",
+    "context": ["admin", "frontend", "rest", "ajax"],
+    "caller": {
+        "file": "CouponSystemExtension.php",
+        "class": "Jankx\\Extensions\\CouponSystem\\CouponSystemExtension",
+        "method": "init"
+    },
+    "requirements": {
+        "php": ">=7.4"
+    },
+    "auto_activate": true
+}

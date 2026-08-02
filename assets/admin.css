@@ -1,0 +1,117 @@
+/* Nobitour Coupon System - Admin Styles */
+
+.jankx-coupon-meta-box .form-table th {
+    padding: 15px 10px 15px 0;
+    font-weight: 600;
+    color: #1A1F71;
+}
+
+.jankx-coupon-meta-box .form-table td {
+    padding: 10px;
+}
+
+.jankx-coupon-meta-box .form-table input.regular-text,
+.jankx-coupon-meta-box .form-table select.regular-text {
+    width: 100%;
+    max-width: 400px;
+}
+
+.jankx-coupon-meta-box .form-table input[type="number"] {
+    width: 120px;
+}
+
+.jankx-coupon-meta-box .form-table input[type="date"] {
+    width: 200px;
+}
+
+.jankx-coupon-meta-box .form-table .description {
+    margin-top: 6px;
+    font-style: italic;
+    color: #6B7280;
+}
+
+/* Coupon code styling */
+.jankx-coupon-meta-box input[name="coupon_code"] {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: #FFFEF5;
+    border: 2px dashed #65A30D;
+    padding: 10px 14px;
+}
+
+.jankx-coupon-meta-box input[name="coupon_code"]:focus {
+    border-color: #1A1F71;
+    box-shadow: 0 0 0 3px rgba(26, 31, 113, 0.15);
+}
+
+/* Amount field highlight */
+.jankx-coupon-meta-box input[name="coupon_amount"] {
+    border-left: 4px solid #65A30D;
+    padding-left: 10px;
+}
+
+/* Settings page styles */
+.jankx-coupon-settings .form-table th {
+    padding: 20px 10px 20px 0;
+    font-weight: 600;
+    color: #1A1F71;
+}
+
+.jankx-coupon-settings .form-table td {
+    padding: 15px 10px;
+}
+
+/* Status indicators */
+.jankx-coupon-status-active {
+    color: #65A30D;
+    font-weight: 600;
+}
+
+.jankx-coupon-status-inactive {
+    color: #E00501;
+    font-weight: 600;
+}
+
+/* Quick action buttons */
+.jankx-coupon-actions {
+    margin-top: 15px;
+    padding: 15px;
+    background: #FFFEF5;
+    border: 1px solid #65A30D;
+    border-radius: 8px;
+}
+
+.jankx-coupon-actions h3 {
+    margin-top: 0;
+    color: #1A1F71;
+}
+
+.jankx-coupon-actions .button {
+    margin-right: 10px;
+}
+
+/* Color scheme consistency */
+#adminmenu .toplevel_page_jankx-theme-options .wp-submenu a[href="admin.php?page=jankx-coupon-settings"]::before {
+    content: "\f488";
+    display: inline-block;
+    font-family: dashicons;
+    margin-right: 6px;
+    vertical-align: text-bottom;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 782px) {
+    .jankx-coupon-meta-box .form-table td,
+    .jankx-coupon-meta-box .form-table th {
+        display: block;
+        width: 100%;
+        padding: 10px 0;
+    }
+
+    .jankx-coupon-meta-box .form-table input.regular-text,
+    .jankx-coupon-meta-box .form-table select.regular-text {
+        max-width: 100%;
+    }
+}
