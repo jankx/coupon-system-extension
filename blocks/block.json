@@ -1,0 +1,22 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/account-tab-coupons",
+    "title": "Coupons Tab",
+    "category": "jankx",
+    "icon": "tickets",
+    "description": "Display user's coupons and promotional codes.",
+    "textdomain": "jankx",
+    "parent": ["jankx/my-account"],
+    "attributes": {},
+    "supports": {
+        "html": false,
+        "spacing": {
+            "padding": true,
+            "margin": true
+        }
+    },
+    "editorScript": "file:./build/index.js",
+    "editorStyle": "file:./build/editor.css",
+    "style": "file:./build/style.css"
+}

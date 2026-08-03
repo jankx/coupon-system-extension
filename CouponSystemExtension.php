@@ -54,7 +54,73 @@ class CouponSystemExtension extends AbstractExtension
         if (is_admin()) {
             $settingsPage = new \Jankx\Extensions\CouponSystem\Admin\SettingsPage();
             $settingsPage->register();
+
+            // Register Gutenberg blocks
+            add_action('init', [$this, 'registerBlocks']);
+        } else {
+            // Frontend: only register blocks on My Account page
+            add_action('template_redirect', [$this, 'maybeRegisterFrontendBlocks']);
         }
+    }
+
+    /**
+     * Register Gutenberg blocks for this extension
+     */
+    public function registerBlocks(): void
+    {
+        $blocksDir = __DIR__ . '/blocks';
+        if (!is_dir($blocksDir)) {
+            return;
+        }
+
+        $blockPath = $blocksDir . '/account-tab-coupons';
+        if (!is_dir($blockPath)) {
+            return;
+        }
+
+        $block = new \Jankx\Extensions\CouponSystem\Blocks\AccountTabCouponsBlock($blockPath);
+        $block->setBlockPath($blockPath);
+        $block->boot();
+        $block->register();
+    }
+
+    /**
+     * Check if current page is My Account page and register blocks if so
+     */
+    public function maybeRegisterFrontendBlocks(): void
+    {
+        if (!$this->isMyAccountPage()) {
+            return;
+        }
+
+        $this->registerBlocks();
+    }
+
+    /**
+     * Check if current page is My Account page or a sub-page
+     */
+    protected function isMyAccountPage(): bool
+    {
+        $pageId = get_option('jankx_my_account_page_id', 0);
+        if (!$pageId) {
+            return false;
+        }
+
+        if (is_page($pageId)) {
+            return true;
+        }
+
+        $subPage = get_query_var('jankx_account_page');
+        if (!empty($subPage)) {
+            return true;
+        }
+
+        global $post;
+        if ($post && has_shortcode($post->post_content, 'jankx_my_account')) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

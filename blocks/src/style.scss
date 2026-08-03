@@ -1,0 +1,131 @@
+.jankx-tab-panel {
+    padding: 24px;
+    background: #fff;
+    border-radius: 8px;
+
+    .jankx-section-title {
+        margin: 0 0 20px;
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .jankx-form {
+        .jankx-form-group {
+            margin-bottom: 16px;
+
+            label {
+                display: block;
+                margin-bottom: 6px;
+                font-size: 14px;
+                font-weight: 500;
+                color: #333;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            input[type="tel"],
+            input[type="password"] {
+                width: 100%;
+                padding: 10px 12px;
+                border: 1px solid #ddd;
+                border-radius: 6px;
+                font-size: 14px;
+
+                &:focus {
+                    outline: none;
+                    border-color: var(--wp--preset--color--primary, #65A30D);
+                    box-shadow: 0 0 0 2px var(--wp--preset--color--primary, #65A30D)20;
+                }
+            }
+        }
+
+        .jankx-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+
+            @media (max-width: 768px) {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .jankx-form-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
+    }
+
+    .jankx-divider {
+        height: 1px;
+        background: #eee;
+        margin: 32px 0;
+    }
+
+    .jankx-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 500;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &.jankx-btn-primary {
+            background: var(--wp--preset--color--primary, #65A30D);
+            color: #fff;
+            border: none;
+
+            &:hover {
+                opacity: 0.9;
+            }
+        }
+
+        &.jankx-btn-outline {
+            background: transparent;
+            color: var(--wp--preset--color--primary, #65A30D);
+            border: 1px solid var(--wp--preset--color--primary, #65A30D);
+
+            &:hover {
+                background: var(--wp--preset--color--primary, #65A30D)10;
+            }
+        }
+
+        &.jankx-btn-danger {
+            background: #dc3545;
+            color: #fff;
+            border: none;
+
+            &:hover {
+                background: #c82333;
+            }
+        }
+    }
+
+    .jankx-empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #999;
+
+        p {
+            margin: 12px 0 0;
+        }
+    }
+
+    .jankx-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        font-size: 12px;
+        font-weight: 500;
+        border-radius: 4px;
+
+        &.pending { background: #fff3cd; color: #856404; }
+        &.confirmed { background: #cce5ff; color: #004085; }
+        &.completed { background: #d4edda; color: #155724; }
+        &.cancelled { background: #f8d7da; color: #721c24; }
+        &.paid { background: #d4edda; color: #155724; }
+    }
+}
