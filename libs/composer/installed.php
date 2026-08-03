@@ -3,7 +3,7 @@
         'name' => 'jankx/coupon-system',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '77bc475f136c0ada1c36dddfd8f67e2d010c7143',
+        'reference' => 'abe0fbed785d4a4a6ebba1a5f9151e836ff13b49',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'jankx/coupon-system' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '77bc475f136c0ada1c36dddfd8f67e2d010c7143',
+            'reference' => 'abe0fbed785d4a4a6ebba1a5f9151e836ff13b49',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

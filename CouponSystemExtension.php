@@ -48,9 +48,26 @@ class CouponSystemExtension extends AbstractExtension
         $metaBoxes = new \Jankx\Extensions\CouponSystem\Meta\CouponMetaBoxes();
         $metaBoxes->register();
 
+        // Register sub-page with My Account
+        add_action('jankx/my_account/register_sub_pages', [$this, 'registerAccountSubPage']);
+
         if (is_admin()) {
             $settingsPage = new \Jankx\Extensions\CouponSystem\Admin\SettingsPage();
             $settingsPage->register();
         }
+    }
+
+    /**
+     * Register coupon sub-page with My Account
+     */
+    public function registerAccountSubPage(): void
+    {
+        \Jankx\Extensions\MyAccount\MyAccountExtension::registerSubPage('coupons', [
+            'label' => 'Mã ưu đãi',
+            'icon' => '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg>',
+            'priority' => 20,
+            'extension' => 'coupon-system',
+            'show_in_nav' => true,
+        ]);
     }
 }
