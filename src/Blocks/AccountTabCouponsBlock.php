@@ -24,7 +24,9 @@ class AccountTabCouponsBlock extends Block
             $activeTab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'profile';
         }
 
-        if ($activeTab !== 'coupons') {
+        $is_editor = defined('REST_REQUEST') && REST_REQUEST && !empty($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/block-renderer/') !== false;
+
+        if (!$is_editor && $activeTab !== 'coupons') {
             return '';
         }
 
