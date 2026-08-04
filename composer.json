@@ -2,7 +2,7 @@
     "name": "jankx/coupon-system",
     "autoload": {
         "psr-4": {
-            "Jankx\\CouponSystem\\": "src/"
+            "Jankx\\Extensions\\CouponSystem\\": "src/"
         }
     },
     "authors": [

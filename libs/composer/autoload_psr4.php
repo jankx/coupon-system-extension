@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Jankx\\CouponSystem\\' => array($baseDir . '/src'),
+    'Jankx\\Extensions\\CouponSystem\\' => array($baseDir . '/src'),
 );

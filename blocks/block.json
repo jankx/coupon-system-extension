@@ -7,7 +7,9 @@
     "icon": "tickets",
     "description": "Display user's coupons and promotional codes.",
     "textdomain": "jankx",
-    "parent": ["jankx/my-account"],
+    "parent": [
+        "jankx/my-account"
+    ],
     "attributes": {},
     "supports": {
         "html": false,
@@ -15,8 +17,5 @@
             "padding": true,
             "margin": true
         }
-    },
-    "editorScript": "file:./build/index.js",
-    "editorStyle": "file:./build/editor.css",
-    "style": "file:./build/style.css"
+    }
 }
