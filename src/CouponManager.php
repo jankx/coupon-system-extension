@@ -284,7 +284,8 @@ class CouponManager
                 [
                     'key'     => Coupon::META_PREFIX . 'user_ids',
                     'compare' => 'LIKE',
-                    'value'   => '"' . $userId . '"',
+                    // Matches the PHP-serialized array entry e.g. a:1:{i:0;i:2;}
+                    'value'   => 'i:' . $userId . ';',
                 ],
             ],
         ]);

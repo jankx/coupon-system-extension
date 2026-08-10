@@ -196,8 +196,16 @@ class Coupon
     public function getApplyValues(): array
     {
         $values = $this->getRuleSource()->getMeta('apply_values');
+        if (!is_array($values)) {
+            return [];
+        }
 
-        return is_array($values) ? array_map('intval', $values) : [];
+        // Product IDs are numeric; product-type restrictions store slugs.
+        if ($this->getAppliesTo() === 'product') {
+            return array_map('intval', $values);
+        }
+
+        return array_map('sanitize_key', $values);
     }
 
     public function getAllowedUserIds(): array
