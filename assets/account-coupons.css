@@ -1,0 +1,203 @@
+/* Nobitour Coupon System - Frontend Styles */
+
+/* ---------- My Account: coupon tabs ---------- */
+.jankx-coupon-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 12px;
+}
+
+.jankx-coupon-tab {
+    padding: 8px 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fff;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.jankx-coupon-tab:hover {
+    border-color: #1A1F71;
+    color: #1A1F71;
+}
+
+.jankx-coupon-tab.is-active {
+    background: #1A1F71;
+    border-color: #1A1F71;
+    color: #fff;
+}
+
+.jankx-coupon-count {
+    display: inline-block;
+    min-width: 20px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, .08);
+    font-size: 12px;
+    text-align: center;
+}
+
+.jankx-coupon-tab.is-active .jankx-coupon-count {
+    background: rgba(255, 255, 255, .25);
+}
+
+.jankx-coupon-panel {
+    display: none;
+}
+
+.jankx-coupon-panel.is-active {
+    display: block;
+}
+
+/* ---------- Coupon cards ---------- */
+.jankx-coupon-list {
+    display: grid;
+    gap: 12px;
+}
+
+.jankx-coupon-card {
+    display: flex;
+    gap: 16px;
+    align-items: stretch;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .04);
+}
+
+.jankx-coupon-card-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    min-width: 130px;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #1A1F71, #283593);
+    color: #fff;
+    text-align: center;
+}
+
+.jankx-coupon-card-used .jankx-coupon-card-left,
+.jankx-coupon-card-expired .jankx-coupon-card-left,
+.jankx-coupon-card-invalid .jankx-coupon-card-left {
+    background: #6B7280;
+}
+
+.jankx-coupon-card-exhausted .jankx-coupon-card-left,
+.jankx-coupon-card-paused .jankx-coupon-card-left {
+    background: #B45309;
+}
+
+.jankx-coupon-amount {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.jankx-coupon-code {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: .9;
+    word-break: break-all;
+}
+
+.jankx-coupon-card-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    flex: 1;
+    padding: 14px 16px;
+}
+
+.jankx-coupon-title {
+    font-weight: 600;
+    color: #111827;
+}
+
+.jankx-coupon-desc {
+    font-size: 13px;
+    color: #6B7280;
+}
+
+.jankx-coupon-meta {
+    font-size: 12px;
+    color: #9CA3AF;
+}
+
+.jankx-btn-sm {
+    padding: 6px 14px;
+    font-size: 13px;
+    margin-top: 6px;
+}
+
+/* ---------- Cart coupon form ---------- */
+.jankx-coupon-form {
+    margin-bottom: 16px;
+    padding: 12px;
+    border: 1px dashed #d1d5db;
+    border-radius: 8px;
+    background: #F9FAFB;
+}
+
+.jankx-coupon-input-row {
+    display: flex;
+    gap: 8px;
+}
+
+.jankx-coupon-input-row .jankx-coupon-code {
+    flex: 1;
+    min-width: 0;
+    padding: 9px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.jankx-coupon-message {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: #16A34A;
+}
+
+.jankx-coupon-message.is-error {
+    color: #DC2626;
+}
+
+.jankx-coupon-applied {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.jankx-coupon-applied-code {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #1A1F71;
+}
+
+@media (max-width: 480px) {
+    .jankx-coupon-card {
+        flex-direction: column;
+    }
+
+    .jankx-coupon-card-left {
+        min-width: 0;
+        padding: 12px;
+    }
+}

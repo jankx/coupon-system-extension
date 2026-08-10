@@ -2,6 +2,9 @@
 namespace Jankx\Extensions\CouponSystem;
 
 use Jankx\Extensions\AbstractExtension;
+use Jankx\Extensions\CouponSystem\Blocks\AccountTabCouponsBlock;
+use Jankx\Extensions\CouponSystem\Integration\CheckoutIntegration;
+use Jankx\Extensions\CouponSystem\Rest\CouponController;
 
 class CouponSystemExtension extends AbstractExtension
 {
@@ -48,11 +51,20 @@ class CouponSystemExtension extends AbstractExtension
         $metaBoxes = new \Jankx\Extensions\CouponSystem\Meta\CouponMetaBoxes();
         $metaBoxes->register();
 
+        // Bridge into the ecommerce cart/checkout flow.
+        (new CheckoutIntegration())->register();
+
+        // REST API for coupons, collection and cart apply.
+        add_action('rest_api_init', [$this, 'register_rest_routes']);
+
         // Register sub-page with My Account
         add_action('jankx/my_account/register_sub_pages', [$this, 'registerAccountSubPage']);
 
         // Always register blocks so ServerSideRender works in editor
         $this->registerBlocks();
+
+        // Frontend assets on the my-account and cart pages.
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
 
         if (is_admin()) {
             $settingsPage = new \Jankx\Extensions\CouponSystem\Admin\SettingsPage();
@@ -127,12 +139,64 @@ class CouponSystemExtension extends AbstractExtension
      */
     public function registerAccountSubPage(): void
     {
+        if (!class_exists('\Jankx\Extensions\MyAccount\MyAccountExtension')) {
+            return;
+        }
+
         \Jankx\Extensions\MyAccount\MyAccountExtension::registerSubPage('coupons', [
-            'label' => 'Coupons',
+            'label' => __('Mã giảm giá', 'jankx'),
             'icon' => '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg>',
             'priority' => 20,
             'extension' => 'coupon-system',
             'show_in_nav' => true,
+            'callback' => [new AccountTabCouponsBlock(), 'render'],
+        ]);
+    }
+
+    /**
+     * Register the coupon REST routes.
+     */
+    public function register_rest_routes(): void
+    {
+        (new CouponController())->register_routes();
+    }
+
+    /**
+     * Frontend assets for the my-account coupons tab and the cart page.
+     */
+    public function enqueue_frontend_assets(): void
+    {
+        $isCartPage = class_exists('\Jankx\Extensions\Ecommerce\EcommerceExtension')
+            && \Jankx\Extensions\Ecommerce\EcommerceExtension::get_cart_page_id()
+            && is_page(\Jankx\Extensions\Ecommerce\EcommerceExtension::get_cart_page_id());
+
+        if (!$this->isMyAccountPage() && !$isCartPage) {
+            return;
+        }
+
+        wp_enqueue_style(
+            'jankx-account-coupons',
+            $this->get_extension_url() . '/assets/account-coupons.css',
+            [],
+            filemtime($this->get_extension_path() . '/assets/account-coupons.css')
+        );
+
+        wp_enqueue_script(
+            'jankx-account-coupons',
+            $this->get_extension_url() . '/assets/account-coupons.js',
+            [],
+            filemtime($this->get_extension_path() . '/assets/account-coupons.js'),
+            true
+        );
+
+        wp_localize_script('jankx-account-coupons', 'jankxCoupon', [
+            'restUrl' => esc_url_raw(rest_url(CouponController::REST_NAMESPACE)),
+            'nonce'   => wp_create_nonce('wp_rest'),
+            'i18n'    => [
+                'error'     => __('Đã xảy ra lỗi, vui lòng thử lại.', 'jankx'),
+                'copied'    => __('Đã sao chép!', 'jankx'),
+                'enterCode' => __('Vui lòng nhập mã giảm giá.', 'jankx'),
+            ],
         ]);
     }
 }

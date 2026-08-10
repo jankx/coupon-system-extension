@@ -74,6 +74,42 @@
     font-weight: 600;
 }
 
+/* List table status badges */
+.jankx-coupon-status {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.6;
+}
+
+.jankx-coupon-status-active {
+    background: #F0FDF4;
+    color: #15803D;
+}
+
+.jankx-coupon-status-paused {
+    background: #FFFBEB;
+    color: #B45309;
+}
+
+.jankx-coupon-status-expired,
+.jankx-coupon-status-invalid {
+    background: #FEF2F2;
+    color: #B91C1C;
+}
+
+.jankx-coupon-status-exhausted {
+    background: #FFF7ED;
+    color: #C2410C;
+}
+
+.jankx-coupon-status-used {
+    background: #F3F4F6;
+    color: #4B5563;
+}
+
 /* Quick action buttons */
 .jankx-coupon-actions {
     margin-top: 15px;
