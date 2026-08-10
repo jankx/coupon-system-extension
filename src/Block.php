@@ -41,6 +41,15 @@ abstract class Block
 
     public function register(): void
     {
+        $blockJson = $this->blockPath . '/block.json';
+        if (file_exists($blockJson)) {
+            $metadata = json_decode(file_get_contents($blockJson), true);
+            $name = $metadata['name'] ?? '';
+            if ($name && \WP_Block_Type_Registry::get_instance()->is_registered($name)) {
+                return;
+            }
+        }
+
         $args = [];
         if (method_exists($this, 'render')) {
             $args['render_callback'] = [$this, 'render'];
