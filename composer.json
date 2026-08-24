@@ -25,7 +25,6 @@
     ],
     "require": {},
     "config": {
-        "vendor-dir": "libs",
         "allow-plugins": {
             "php-http/discovery": false
         }
