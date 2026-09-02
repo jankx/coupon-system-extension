@@ -35,50 +35,52 @@ class CouponPostType
         }
 
         $labels = [
-            'name'                  => _x('Mã giảm giá', 'Post type general name', 'jankx'),
-            'singular_name'         => _x('Mã giảm giá', 'Post type singular name', 'jankx'),
-            'menu_name'             => _x('Mã giảm giá', 'Admin Menu text', 'jankx'),
-            'name_admin_bar'        => __('Mã giảm giá', 'jankx'),
-            'add_new'               => __('Thêm mới', 'jankx'),
-            'add_new_item'          => __('Thêm mới mã giảm giá', 'jankx'),
-            'new_item'              => __('Mã giảm giá mới', 'jankx'),
-            'edit_item'             => __('Chỉnh sửa mã giảm giá', 'jankx'),
-            'view_item'             => __('Xem mã giảm giá', 'jankx'),
-            'all_items'             => __('Tất cả mã giảm giá', 'jankx'),
-            'search_items'          => __('Tìm kiếm mã giảm giá', 'jankx'),
-            'parent_item_colon'     => __('Mã giảm giá cha:', 'jankx'),
-            'not_found'             => __('Không tìm thấy mã giảm giá', 'jankx'),
-            'not_found_in_trash'    => __('Không tìm thấy mã giảm giá trong thùng rác', 'jankx'),
-            'featured_image'        => __('Hình ảnh mã giảm giá', 'jankx'),
-            'set_featured_image'    => __('Đặt hình ảnh mã giảm giá', 'jankx'),
+            'name' => _x('Mã giảm giá', 'Post type general name', 'jankx'),
+            'singular_name' => _x('Mã giảm giá', 'Post type singular name', 'jankx'),
+            'menu_name' => _x('Mã giảm giá', 'Admin Menu text', 'jankx'),
+            'name_admin_bar' => __('Mã giảm giá', 'jankx'),
+            'add_new' => __('Thêm mới', 'jankx'),
+            'add_new_item' => __('Thêm mới mã giảm giá', 'jankx'),
+            'new_item' => __('Mã giảm giá mới', 'jankx'),
+            'edit_item' => __('Chỉnh sửa mã giảm giá', 'jankx'),
+            'view_item' => __('Xem mã giảm giá', 'jankx'),
+            'all_items' => __('Tất cả mã giảm giá', 'jankx'),
+            'search_items' => __('Tìm kiếm mã giảm giá', 'jankx'),
+            'parent_item_colon' => __('Mã giảm giá cha:', 'jankx'),
+            'not_found' => __('Không tìm thấy mã giảm giá', 'jankx'),
+            'not_found_in_trash' => __('Không tìm thấy mã giảm giá trong thùng rác', 'jankx'),
+            'featured_image' => __('Hình ảnh mã giảm giá', 'jankx'),
+            'set_featured_image' => __('Đặt hình ảnh mã giảm giá', 'jankx'),
             'remove_featured_image' => __('Xóa hình ảnh mã giảm giá', 'jankx'),
-            'use_featured_image'    => __('Sử dụng làm hình ảnh mã giảm giá', 'jankx'),
-            'archives'              => __('Mã giảm giá', 'jankx'),
-            'attributes'            => __('Thuộc tính mã giảm giá', 'jankx'),
-            'filter_items_list'     => __('Lọc danh sách mã giảm giá', 'jankx'),
+            'use_featured_image' => __('Sử dụng làm hình ảnh mã giảm giá', 'jankx'),
+            'archives' => __('Mã giảm giá', 'jankx'),
+            'attributes' => __('Thuộc tính mã giảm giá', 'jankx'),
+            'filter_items_list' => __('Lọc danh sách mã giảm giá', 'jankx'),
             'items_list_navigation' => __('Điều hướng danh sách mã giảm giá', 'jankx'),
-            'items_list'            => __('Danh sách mã giảm giá', 'jankx'),
-            'item_published'        => __('Mã giảm giá đã xuất bản', 'jankx'),
+            'items_list' => __('Danh sách mã giảm giá', 'jankx'),
+            'item_published' => __('Mã giảm giá đã xuất bản', 'jankx'),
             'item_published_privately' => __('Mã giảm giá đã xuất bản riêng tư', 'jankx'),
             'item_reverted_to_draft' => __('Mã giảm giá đã chuyển về bản nháp', 'jankx'),
-            'item_updated'          => __('Mã giảm giá đã cập nhật', 'jankx'),
+            'item_updated' => __('Mã giảm giá đã cập nhật', 'jankx'),
         ];
 
         $args = [
-            'labels'             => $labels,
-            'public'             => false,
+            'labels' => $labels,
+            'public' => false,
             'publicly_queryable' => false,
-            'show_ui'            => true,
-            'show_in_menu'       => true,
-            'show_in_rest'       => true,
-            'query_var'          => false,
-            'rewrite'            => false,
-            'capability_type'    => 'post',
-            'has_archive'        => false,
-            'hierarchical'       => false,
-            'menu_position'      => 30,
-            'menu_icon'          => 'dashicons-tickets-alt',
-            'supports'           => ['title', 'editor', 'thumbnail', 'custom-fields'],
+            'show_ui' => true,
+            'show_in_menu' => true,
+            'show_in_rest' => true,
+            'query_var' => false,
+            'rewrite' => array(
+                'slug' => 'coupon'
+            ),
+            'capability_type' => 'post',
+            'has_archive' => false,
+            'hierarchical' => false,
+            'menu_position' => 30,
+            'menu_icon' => 'dashicons-tickets-alt',
+            'supports' => ['title', 'editor', 'thumbnail', 'custom-fields'],
         ];
 
         register_post_type(self::POST_TYPE, $args);
@@ -91,15 +93,15 @@ class CouponPostType
     public function registerColumns(array $columns): array
     {
         $newColumns = [
-            'cb'      => $columns['cb'],
-            'code'    => __('Mã', 'jankx'),
-            'title'   => __('Tiêu đề', 'jankx'),
-            'type'    => __('Loại giảm giá', 'jankx'),
-            'status'  => __('Trạng thái', 'jankx'),
-            'uses'    => __('Đã dùng / Tối đa', 'jankx'),
-            'owner'   => __('Chủ sở hữu', 'jankx'),
-            'expiry'  => __('Hết hạn', 'jankx'),
-            'date'    => $columns['date'],
+            'cb' => $columns['cb'],
+            'code' => __('Mã', 'jankx'),
+            'title' => __('Tiêu đề', 'jankx'),
+            'type' => __('Loại giảm giá', 'jankx'),
+            'status' => __('Trạng thái', 'jankx'),
+            'uses' => __('Đã dùng / Tối đa', 'jankx'),
+            'owner' => __('Chủ sở hữu', 'jankx'),
+            'expiry' => __('Hết hạn', 'jankx'),
+            'date' => $columns['date'],
         ];
 
         return $newColumns;
@@ -144,7 +146,7 @@ class CouponPostType
                 if ($coupon->isSlave()) {
                     $userId = $coupon->getUserId();
                     $user = $userId ? get_userdata($userId) : null;
-                    echo $user ? esc_html($user->display_name) : esc_html('#'.$userId);
+                    echo $user ? esc_html($user->display_name) : esc_html('#' . $userId);
                 } elseif ($coupon->isGlobal()) {
                     esc_html_e('Tất cả', 'jankx');
                 } else {
@@ -161,7 +163,7 @@ class CouponPostType
 
     public function registerSortableColumns(array $columns): array
     {
-        $columns['code']   = 'jankx_coupon_code';
+        $columns['code'] = 'jankx_coupon_code';
         $columns['status'] = 'jankx_coupon_status';
         $columns['expiry'] = 'jankx_coupon_expiry';
 
@@ -185,7 +187,7 @@ class CouponPostType
         $statuses = array_merge(['' => __('Tất cả trạng thái', 'jankx')], $statuses);
         ?>
         <select name="coupon_status">
-            <?php foreach ($statuses as $value => $label) : ?>
+            <?php foreach ($statuses as $value => $label): ?>
                 <option value="<?php echo esc_attr($value); ?>" <?php selected($status, $value); ?>>
                     <?php echo esc_html($label); ?>
                 </option>
@@ -194,8 +196,10 @@ class CouponPostType
 
         <select name="coupon_kind">
             <option value="" <?php selected($type, ''); ?>><?php esc_html_e('Tất cả loại', 'jankx'); ?></option>
-            <option value="master" <?php selected($type, 'master'); ?>><?php esc_html_e('Master (toàn hệ thống)', 'jankx'); ?></option>
-            <option value="slave" <?php selected($type, 'slave'); ?>><?php esc_html_e('Slave (bản sao cá nhân)', 'jankx'); ?></option>
+            <option value="master" <?php selected($type, 'master'); ?>><?php esc_html_e('Master (toàn hệ thống)', 'jankx'); ?>
+            </option>
+            <option value="slave" <?php selected($type, 'slave'); ?>><?php esc_html_e('Slave (bản sao cá nhân)', 'jankx'); ?>
+            </option>
         </select>
         <?php
     }
@@ -210,19 +214,19 @@ class CouponPostType
 
         if (isset($_GET['coupon_kind']) && $_GET['coupon_kind'] === 'slave') {
             $metaQuery[] = [
-                'key'     => Coupon::META_PREFIX . 'master_id',
+                'key' => Coupon::META_PREFIX . 'master_id',
                 'compare' => 'EXISTS',
             ];
         } elseif (isset($_GET['coupon_kind']) && $_GET['coupon_kind'] === 'master') {
             $metaQuery[] = [
-                'key'     => Coupon::META_PREFIX . 'master_id',
+                'key' => Coupon::META_PREFIX . 'master_id',
                 'compare' => 'NOT EXISTS',
             ];
         }
 
         if (!empty($_GET['coupon_status'])) {
             $metaQuery[] = [
-                'key'   => Coupon::META_PREFIX . 'status',
+                'key' => Coupon::META_PREFIX . 'status',
                 'value' => sanitize_key($_GET['coupon_status']),
             ];
         }
