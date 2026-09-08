@@ -84,26 +84,46 @@ class CouponSystemExtension extends AbstractExtension
             return;
         }
 
-        $blockPath = $blocksDir;
-        if (!file_exists($blockPath . '/block.json')) {
-            return;
+        if (file_exists($blocksDir . '/block.json')) {
+            $block = new \Jankx\Extensions\CouponSystem\Blocks\AccountTabCouponsBlock($blocksDir);
+            $block->setBlockPath($blocksDir);
+            $block->boot();
+            $block->register();
         }
 
-        $block = new \Jankx\Extensions\CouponSystem\Blocks\AccountTabCouponsBlock($blockPath);
-        $block->setBlockPath($blockPath);
-        $block->boot();
-        $block->register();
+        foreach (glob($blocksDir . '/*', GLOB_ONLYDIR) as $blockDir) {
+            if ($blockDir === $blocksDir . '/build' || $blockDir === $blocksDir . '/src') {
+                continue;
+            }
+
+            if (!file_exists($blockDir . '/block.json')) {
+                continue;
+            }
+
+            $blockJson = json_decode(file_get_contents($blockDir . '/block.json'), true);
+            $blockName = $blockJson['name'] ?? '';
+
+            if ($blockName === 'jankx/account-tab-coupons' && !\WP_Block_Type_Registry::get_instance()->is_registered($blockName)) {
+                $block = new \Jankx\Extensions\CouponSystem\Blocks\AccountTabCouponsBlock($blockDir);
+                $block->setBlockPath($blockDir);
+                $block->boot();
+                $block->register();
+            } elseif ($blockName === 'jankx/available-coupons' && !\WP_Block_Type_Registry::get_instance()->is_registered($blockName)) {
+                $block = new \Jankx\Extensions\CouponSystem\Blocks\AvailableCouponsBlock($blockDir);
+                $block->setBlockPath($blockDir);
+                $block->boot();
+                $block->register();
+            } elseif ($blockName && !\WP_Block_Type_Registry::get_instance()->is_registered($blockName)) {
+                register_block_type_from_metadata($blockDir);
+            }
+        }
     }
 
     /**
-     * Check if current page is My Account page and register blocks if so
+     * Check and register blocks on frontend if needed
      */
     public function maybeRegisterFrontendBlocks(): void
     {
-        if (!$this->isMyAccountPage()) {
-            return;
-        }
-
         $this->registerBlocks();
     }
 
@@ -149,7 +169,7 @@ class CouponSystemExtension extends AbstractExtension
             'priority' => 20,
             'extension' => 'coupon-system',
             'show_in_nav' => true,
-            'callback' => [new AccountTabCouponsBlock(), 'render'],
+            'callback' => [new \Jankx\Extensions\CouponSystem\Blocks\AccountTabCouponsBlock(), 'render'],
         ]);
     }
 
@@ -162,7 +182,7 @@ class CouponSystemExtension extends AbstractExtension
     }
 
     /**
-     * Frontend assets for the my-account coupons tab and the cart page.
+     * Frontend assets for the my-account coupons tab, cart page, and available coupons block.
      */
     public function enqueue_frontend_assets(): void
     {
@@ -170,7 +190,10 @@ class CouponSystemExtension extends AbstractExtension
             && \Jankx\Extensions\Ecommerce\EcommerceExtension::get_cart_page_id()
             && is_page(\Jankx\Extensions\Ecommerce\EcommerceExtension::get_cart_page_id());
 
-        if (!$this->isMyAccountPage() && !$isCartPage) {
+        $hasAvailableCouponsBlock = function_exists('has_block') && has_block('jankx/available-coupons');
+        $hasAccountCouponsBlock   = function_exists('has_block') && has_block('jankx/account-tab-coupons');
+
+        if (!$this->isMyAccountPage() && !$isCartPage && !$hasAvailableCouponsBlock && !$hasAccountCouponsBlock && !is_singular()) {
             return;
         }
 
@@ -195,6 +218,7 @@ class CouponSystemExtension extends AbstractExtension
             'i18n'    => [
                 'error'     => __('Đã xảy ra lỗi, vui lòng thử lại.', 'jankx'),
                 'copied'    => __('Đã sao chép!', 'jankx'),
+                'collected' => __('Đã thu thập mã thành công!', 'jankx'),
                 'enterCode' => __('Vui lòng nhập mã giảm giá.', 'jankx'),
             ],
         ]);

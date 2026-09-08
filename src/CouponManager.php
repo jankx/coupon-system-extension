@@ -217,6 +217,54 @@ class CouponManager
     }
 
     /**
+     * Active master coupons for frontend bar/pills display.
+     *
+     * @param int $limit
+     * @return Coupon[]
+     */
+    public function findAvailableForDisplay(int $limit = 10): array
+    {
+        $query = new \WP_Query([
+            'post_type'      => CouponPostType::POST_TYPE,
+            'post_status'    => 'publish',
+            'posts_per_page' => $limit,
+            'no_found_rows'  => true,
+            'orderby'        => 'date',
+            'order'          => 'DESC',
+            'meta_query'     => [
+                'relation' => 'AND',
+                [
+                    'key'     => Coupon::META_PREFIX . 'master_id',
+                    'compare' => 'NOT EXISTS',
+                ],
+                [
+                    'relation' => 'OR',
+                    [
+                        'key'     => Coupon::META_PREFIX . 'is_collectable',
+                        'value'   => '1',
+                        'compare' => '=',
+                    ],
+                    [
+                        'key'     => Coupon::META_PREFIX . 'is_global',
+                        'value'   => '1',
+                        'compare' => '=',
+                    ],
+                ],
+            ],
+        ]);
+
+        $coupons = [];
+        foreach ($query->posts as $post) {
+            $coupon = new Coupon($post->ID);
+            if ($coupon->exists() && $coupon->getEffectiveStatus() === Coupon::STATUS_ACTIVE) {
+                $coupons[] = $coupon;
+            }
+        }
+
+        return $coupons;
+    }
+
+    /**
      * All slave coupons a user owns, oldest first.
      *
      * @return Coupon[]

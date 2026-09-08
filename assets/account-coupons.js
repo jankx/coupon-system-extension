@@ -150,11 +150,84 @@
         }
     }
 
+    /* ------------------------------------------------------------------
+     * Available Coupons Bar / Pills & Modal
+     * ---------------------------------------------------------------- */
+    function initAvailableCoupons() {
+        var blocks = document.querySelectorAll('.jankx-available-coupons');
+        if (!blocks.length) {
+            return;
+        }
+
+        blocks.forEach(function (block) {
+            var modal = block.querySelector('.jankx-coupon-modal');
+
+            function openModal() {
+                if (modal) {
+                    modal.classList.add('is-open');
+                    modal.setAttribute('aria-hidden', 'false');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+
+            function closeModal() {
+                if (modal) {
+                    modal.classList.remove('is-open');
+                    modal.setAttribute('aria-hidden', 'true');
+                    document.body.style.overflow = '';
+                }
+            }
+
+            // Click pill -> open modal
+            block.querySelectorAll('.jankx-coupon-pill').forEach(function (pill) {
+                pill.addEventListener('click', function () {
+                    openModal();
+                });
+            });
+
+            // Click chevron right button -> open modal
+            var moreBtn = block.querySelector('.jankx-coupons-more-btn');
+            if (moreBtn) {
+                moreBtn.addEventListener('click', function () {
+                    openModal();
+                });
+            }
+
+            // Close modal handlers
+            if (modal) {
+                var closeBtn = modal.querySelector('.jankx-coupon-modal-close');
+                var backdrop = modal.querySelector('.jankx-coupon-modal-backdrop');
+
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', closeModal);
+                }
+                if (backdrop) {
+                    backdrop.addEventListener('click', closeModal);
+                }
+            }
+
+            // Init action buttons inside modal/block
+            initActions(block);
+        });
+
+        // Close modal on ESC key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.jankx-coupon-modal.is-open').forEach(function (modal) {
+                    modal.classList.remove('is-open');
+                    modal.setAttribute('aria-hidden', 'true');
+                    document.body.style.overflow = '';
+                });
+            }
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.jankx-tab-coupons').forEach(function (scope) {
             initTabs(scope);
             initActions(scope);
         });
         initCartCoupon();
+        initAvailableCoupons();
     });
 })();

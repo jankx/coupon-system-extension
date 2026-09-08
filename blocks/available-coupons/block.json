@@ -1,0 +1,33 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/available-coupons",
+    "title": "Available Coupons",
+    "category": "jankx",
+    "icon": "tickets",
+    "description": "Display available coupons as horizontal pill tags with discount details and collection modal.",
+    "textdomain": "jankx",
+    "attributes": {
+        "limit": { "type": "number", "default": 5 },
+        "title": { "type": "string", "default": "" },
+        "showMore": { "type": "boolean", "default": true },
+        "jankxHideOnUltrawide": { "type": "boolean", "default": false },
+        "jankxHideOnPc": { "type": "boolean", "default": false },
+        "jankxHideOnTablet": { "type": "boolean", "default": false },
+        "jankxHideOnMobile": { "type": "boolean", "default": false }
+    },
+    "supports": {
+        "html": false,
+        "color": {
+            "text": true,
+            "background": true
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true
+        }
+    },
+    "editorScript": "file:./build/index.tsx.js",
+    "style": "file:./build/style.css",
+    "editorStyle": "file:./build/editor.css"
+}

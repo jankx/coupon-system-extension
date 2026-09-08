@@ -607,6 +607,44 @@ class Coupon
      * Serialization
      * ------------------------------------------------------------------- */
 
+    public function getPillLabel(): string
+    {
+        $title = $this->getTitle();
+        if (!empty($title)) {
+            return $title;
+        }
+
+        $type = $this->getType();
+        $amount = $this->getAmount();
+        $minOrder = $this->getMinOrder();
+
+        $amountStr = '';
+        if ($type === self::TYPE_PERCENT) {
+            $amountStr = sprintf(__('Giảm %s%%', 'jankx'), number_format($amount, 0));
+        } else {
+            if ($amount >= 1000000 && fmod($amount, 1000000) === 0.0) {
+                $amountStr = sprintf(__('Giảm %striệu', 'jankx'), number_format($amount / 1000000, 0));
+            } elseif ($amount >= 1000 && fmod($amount, 1000) === 0.0) {
+                $amountStr = sprintf(__('Giảm %sK', 'jankx'), number_format($amount / 1000, 0));
+            } else {
+                $amountStr = sprintf(__('Giảm %sđ', 'jankx'), number_format($amount, 0, ',', '.'));
+            }
+        }
+
+        $minOrderStr = '';
+        if ($minOrder > 0) {
+            if ($minOrder >= 1000000 && fmod($minOrder, 1000000) === 0.0) {
+                $minOrderStr = sprintf(__(' cho đơn từ VND %s triệu', 'jankx'), number_format($minOrder / 1000000, 0));
+            } elseif ($minOrder >= 1000 && fmod($minOrder, 1000) === 0.0) {
+                $minOrderStr = sprintf(__(' cho đơn từ VND %sK', 'jankx'), number_format($minOrder / 1000, 0));
+            } else {
+                $minOrderStr = sprintf(__(' cho đơn từ %sđ', 'jankx'), number_format($minOrder, 0, ',', '.'));
+            }
+        }
+
+        return $amountStr . $minOrderStr;
+    }
+
     public function toArray(): array
     {
         $status = $this->getEffectiveStatus();
@@ -616,6 +654,7 @@ class Coupon
             'id'           => $this->getId(),
             'code'         => $this->getCode(),
             'title'        => $this->getTitle(),
+            'pill_label'   => $this->getPillLabel(),
             'description'  => $this->getDescription(),
             'type'         => $this->getType(),
             'amount'       => $this->getAmount(),
