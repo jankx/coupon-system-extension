@@ -140,6 +140,10 @@ class CouponMetaBoxes
             } elseif ($key === 'coupon_valid_from' || $key === 'coupon_expiry') {
                 $raw = isset($_POST[$key]) ? sanitize_text_field(wp_unslash($_POST[$key])) : '';
                 $value = $raw ? (int) strtotime($raw) : 0;
+            } elseif ($type === 'textarea') {
+                $value = isset($_POST[$key]) ? sanitize_textarea_field(wp_unslash($_POST[$key])) : '';
+            } elseif ($type === 'url') {
+                $value = isset($_POST[$key]) ? esc_url_raw(wp_unslash($_POST[$key])) : '';
             } else {
                 $value = isset($_POST[$key]) ? sanitize_text_field(wp_unslash($_POST[$key])) : '';
             }
@@ -215,6 +219,13 @@ class CouponMetaBoxes
             'coupon_roles',
             'coupon_origin',
             'coupon_source',
+            'coupon_merchant_name',
+            'coupon_merchant_url',
+            'coupon_merchant_logo',
+            'coupon_verified',
+            'coupon_new_user',
+            'coupon_terms',
+            'coupon_discount_cats',
         ];
     }
 
@@ -322,6 +333,41 @@ class CouponMetaBoxes
                 'type' => 'text',
                 'description' => __('Nguồn chính xác tạo mã (vd: membership).', 'jankx'),
             ],
+            'coupon_merchant_name' => [
+                'label' => __('Nhà bán hàng (Merchant)', 'jankx'),
+                'type' => 'text',
+                'description' => __('Tên thương hiệu/website hiển thị trên trang chi tiết (vd: Amazon).', 'jankx'),
+            ],
+            'coupon_merchant_url' => [
+                'label' => __('Link website merchant', 'jankx'),
+                'type' => 'url',
+                'description' => __('URL website merchant cho nút "Go to merchant website".', 'jankx'),
+            ],
+            'coupon_merchant_logo' => [
+                'label' => __('Logo merchant (URL)', 'jankx'),
+                'type' => 'url',
+                'description' => __('URL ảnh logo của merchant hiển thị ở góc phải Courier Header.', 'jankx'),
+            ],
+            'coupon_verified' => [
+                'label' => __('Đã xác minh (Verified)', 'jankx'),
+                'type' => 'checkbox',
+                'description' => __('Hiển thị badge Verified trên trang chi tiết.', 'jankx'),
+            ],
+            'coupon_new_user' => [
+                'label' => __('Chỉ người dùng mới (New User)', 'jankx'),
+                'type' => 'checkbox',
+                'description' => __('Hiển thị badge New User (đối tượng áp dụng).', 'jankx'),
+            ],
+            'coupon_terms' => [
+                'label' => __('Điều khoản & điều kiện', 'jankx'),
+                'type' => 'textarea',
+                'description' => __('Mỗi dòng một điều khoản (T&C).', 'jankx'),
+            ],
+            'coupon_discount_cats' => [
+                'label' => __('Bảng giảm theo ngành hàng', 'jankx'),
+                'type' => 'textarea',
+                'description' => __('Mỗi dòng: Tên danh mục|Phần trăm (vd: Electronics|90, Mobiles|70).', 'jankx'),
+            ],
         ];
     }
 
@@ -391,6 +437,22 @@ class CouponMetaBoxes
                     '<input type="text" id="%1$s" name="%1$s" value="%2$s" class="regular-text">',
                     esc_attr($key),
                     esc_attr($text)
+                );
+                break;
+
+            case 'textarea':
+                printf(
+                    '<textarea id="%1$s" name="%1$s" rows="5" class="large-text">%2$s</textarea>',
+                    esc_attr($key),
+                    esc_textarea((string) $value)
+                );
+                break;
+
+            case 'url':
+                printf(
+                    '<input type="url" id="%1$s" name="%1$s" value="%2$s" class="regular-text">',
+                    esc_attr($key),
+                    esc_attr((string) $value)
                 );
                 break;
 

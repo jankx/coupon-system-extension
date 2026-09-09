@@ -1,0 +1,20 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/coupon-detail",
+    "title": "Coupon Detail",
+    "category": "jankx",
+    "icon": "tickets-alt",
+    "description": "Renders the coupon detail main content: header card, offer box, metadata, Telegram banner, terms and feedback.",
+    "textdomain": "jankx",
+    "supports": {
+        "html": false,
+        "spacing": {
+            "margin": true,
+            "padding": true
+        }
+    },
+    "editorScript": "file:./build/index.js",
+    "style": "file:./build/style.css",
+    "editorStyle": "file:./build/editor.css"
+}

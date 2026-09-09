@@ -54,6 +54,9 @@ class CouponSystemExtension extends AbstractExtension
         // Bridge into the ecommerce cart/checkout flow.
         (new CheckoutIntegration())->register();
 
+        // Coupon detail page (frontend renderer + feedback AJAX).
+        (new \Jankx\Extensions\CouponSystem\Frontend\CouponDetailRenderer())->register();
+
         // REST API for coupons, collection and cart apply.
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
@@ -114,6 +117,26 @@ class CouponSystemExtension extends AbstractExtension
                 $block->register();
             } elseif ($blockName === 'jankx/available-coupons' && !\WP_Block_Type_Registry::get_instance()->is_registered($blockName)) {
                 $block = new \Jankx\Extensions\CouponSystem\Blocks\AvailableCouponsBlock($blockDir);
+                $block->setBlockPath($blockDir);
+                $block->boot();
+                $block->register();
+            } elseif ($blockName === 'jankx/coupon-detail-nav' && !\WP_Block_Type_Registry::get_instance()->is_registered($blockName)) {
+                $block = new \Jankx\Extensions\CouponSystem\Blocks\CouponDetailNav($blockDir);
+                $block->setBlockPath($blockDir);
+                $block->boot();
+                $block->register();
+            } elseif ($blockName === 'jankx/coupon-detail' && !\WP_Block_Type_Registry::get_instance()->is_registered($blockName)) {
+                $block = new \Jankx\Extensions\CouponSystem\Blocks\CouponDetail($blockDir);
+                $block->setBlockPath($blockDir);
+                $block->boot();
+                $block->register();
+            } elseif ($blockName === 'jankx/coupon-related' && !\WP_Block_Type_Registry::get_instance()->is_registered($blockName)) {
+                $block = new \Jankx\Extensions\CouponSystem\Blocks\CouponRelated($blockDir);
+                $block->setBlockPath($blockDir);
+                $block->boot();
+                $block->register();
+            } elseif ($blockName === 'jankx/coupon-source-cta' && !\WP_Block_Type_Registry::get_instance()->is_registered($blockName)) {
+                $block = new \Jankx\Extensions\CouponSystem\Blocks\CouponSourceCta($blockDir);
                 $block->setBlockPath($blockDir);
                 $block->boot();
                 $block->register();

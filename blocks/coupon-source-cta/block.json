@@ -1,0 +1,20 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/coupon-source-cta",
+    "title": "Coupon Source CTA",
+    "category": "jankx",
+    "icon": "admin-site",
+    "description": "Banner to add the coupon as a preferred source on Google.",
+    "textdomain": "jankx",
+    "supports": {
+        "html": false,
+        "spacing": {
+            "margin": true,
+            "padding": true
+        }
+    },
+    "editorScript": "file:./build/index.js",
+    "style": "file:./build/style.css",
+    "editorStyle": "file:./build/editor.css"
+}

@@ -1,0 +1,71 @@
+.jd-nav{display:flex;align-items:center;gap:8px;padding:16px 0;max-width:1200px;margin:0 auto}
+.jd-nav__spacer{flex:1}
+.jd-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:10px;font-size:14px;font-weight:600;line-height:1;padding:12px 16px;cursor:pointer;text-decoration:none;transition:background .15s,box-shadow .15s,transform .15s;font-family:inherit}
+.jd-btn:hover{transform:translateY(-1px)}
+.jd-btn-ghost{background:#fff;color:#1e293b;border:1px solid #e2e8f0}
+.jd-btn-ghost:hover{background:#f1f5f9}
+.jd-btn-primary{background:#2563eb;color:#fff}
+.jd-btn-primary:hover{background:#1d4ed8}
+.jd-btn-secondary{background:#fff;color:#2563eb;border:2px solid #2563eb}
+.jd-btn-secondary:hover{background:#eff6ff}
+.jd-btn-light{background:#fff;color:#0284c7}
+.jd-btn-block{display:flex;width:100%}
+.jd-btn-sm{font-size:13px;padding:8px 12px}
+.jd-hero{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:28px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.jd-hero__top{display:flex;justify-content:space-between;gap:24px;align-items:flex-start}
+.jd-hero__headline{flex:1}
+.jd-hero__tag{display:inline-flex;align-items:center;gap:6px;background:#7c3aed;color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:6px 12px;border-radius:999px}
+.jd-hero__tag svg{color:#fbbf24}
+.jd-hero__discount{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;color:#dc2626;line-height:1.15;margin:14px 0 6px}
+.jd-hero__title{font-size:clamp(1rem,2vw,1.25rem);font-weight:600;color:#334155;margin:0}
+.jd-hero__logo{width:72px;height:72px;border:1px solid #e2e8f0;border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#f8fafc;flex-shrink:0}
+.jd-hero__logo img{width:100%;height:100%;object-fit:contain}
+.jd-hero__logo-fallback{font-weight:800;font-size:22px;color:#2563eb}
+.jd-offer-box{margin-top:22px;border:2px dashed #2563eb;border-radius:14px;padding:20px;background:#eff6ff;text-align:center}
+.jd-offer-box__message{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:15px;color:#1e3a8a}
+.jd-offer-box__icon{width:22px;height:22px;border-radius:50%;background:#16a34a;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:13px}
+.jd-offer-box__code{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0}
+.jd-offer-box__code code{font-size:20px;font-weight:800;letter-spacing:2px;color:#1e3a8a;background:#dbeafe;border-radius:8px;padding:8px 16px}
+.jd-offer-box__action{margin-top:4px}
+.jd-meta{list-style:none;display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 0;padding:0}
+.jd-meta__item{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#475569;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:999px;padding:6px 12px}
+.jd-meta__verified svg{color:#16a34a}
+.jd-meta__expiry svg{color:#f59e0b}
+.jd-telegram{display:flex;align-items:center;gap:16px;margin:16px 0;background:linear-gradient(135deg,#0284c7,#0369a1);border-radius:14px;padding:18px 22px;color:#fff;text-decoration:none;box-shadow:0 2px 6px rgba(3,105,161,.25)}
+.jd-telegram__text{flex:1;display:flex;flex-direction:column;gap:2px}
+.jd-telegram__text strong{font-size:16px;letter-spacing:.5px}
+.jd-telegram__text span{font-size:13px;opacity:.9}
+.jd-terms{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:24px;margin-top:16px}
+.jd-section-title{font-size:18px;font-weight:700;color:#1e293b;margin:0 0 14px}
+.jd-terms__list{margin:0 0 0 20px;padding:0;color:#475569;font-size:14px;line-height:1.8}
+.jd-terms__list li{padding-left:4px}
+.jd-discount-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:14px}
+.jd-discount-table th,.jd-discount-table td{border:1px solid #e2e8f0;padding:10px 14px;text-align:left}
+.jd-discount-table th{background:#f8fafc;font-weight:700;color:#334155}
+.jd-discount-table td:last-child{color:#dc2626;font-weight:700;text-align:right}
+.jd-feedback{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:24px;margin-top:16px;text-align:center}
+.jd-feedback__actions{display:flex;gap:12px;justify-content:center}
+.jd-feedback__btn{background:#fff;color:#1e293b;border:1px solid #e2e8f0}
+.jd-feedback__btn:hover{border-color:#2563eb;color:#2563eb}
+.jd-feedback__btn.is-active{background:#2563eb;color:#fff;border-color:#2563eb}
+.jd-feedback__count{min-width:20px;text-align:center;font-weight:700}
+.jd-related{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:22px}
+.jd-sidebar-title{font-size:16px;font-weight:700;color:#1e293b;margin:0 0 16px}
+.jd-related__list{display:flex;flex-direction:column;gap:10px}
+.jd-related-card{display:flex;gap:12px;align-items:center;border:1px solid #e2e8f0;border-radius:12px;padding:12px;text-decoration:none;transition:box-shadow .15s,border-color .15s}
+.jd-related-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.08);border-color:#bfdbfe}
+.jd-related-card__logo{width:42px;height:42px;border-radius:10px;background:#eff6ff;color:#2563eb;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;text-align:center;overflow:hidden;flex-shrink:0}
+.jd-related-card__body{display:flex;flex-direction:column;gap:2px;min-width:0}
+.jd-related-card__title{font-size:13px;font-weight:600;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jd-related-card__discount{font-size:12px;color:#dc2626;font-weight:700}
+.jd-source-cta{margin-top:16px;background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:22px;text-align:center}
+.jd-source-cta__icon{width:44px;height:44px;border-radius:12px;background:#f8fafc;display:inline-flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#4285f4;margin-bottom:10px}
+.jd-source-cta__text{font-size:14px;font-weight:600;color:#334155;margin:0 0 14px}
+.jd-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0f172a;color:#fff;font-size:14px;padding:10px 18px;border-radius:10px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.jd-editor-placeholder{border:1px dashed #cbd5e1;border-radius:12px;background:#f8fafc;color:#64748b;font-size:14px;font-weight:600;padding:48px 24px;text-align:center}
+@media (max-width:600px){
+.jd-hero__top{flex-direction:column-reverse}
+.jd-hero__logo{margin-left:auto}
+.jd-offer-box__code{flex-direction:column}
+.jd-feedback__actions{flex-direction:column}
+}

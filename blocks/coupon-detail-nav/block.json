@@ -1,0 +1,20 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/coupon-detail-nav",
+    "title": "Coupon Detail Navigation",
+    "category": "jankx",
+    "icon": "arrow-left-alt",
+    "description": "Top navigation bar for the coupon detail page (Go Back / Share).",
+    "textdomain": "jankx",
+    "supports": {
+        "html": false,
+        "spacing": {
+            "margin": true,
+            "padding": true
+        }
+    },
+    "editorScript": "file:./build/index.js",
+    "style": "file:./build/style.css",
+    "editorStyle": "file:./build/editor.css"
+}

@@ -238,6 +238,65 @@ class Coupon
     }
 
     /* ---------------------------------------------------------------------
+     * Coupon detail page (merchant + display data)
+     * ------------------------------------------------------------------- */
+
+    public function getMerchantName(): string
+    {
+        $name = (string) $this->getMeta('merchant_name');
+        return $name ?: (string) $this->getTitle();
+    }
+
+    public function getMerchantUrl(): string
+    {
+        $url = (string) $this->getMeta('merchant_url');
+        return $url ?: home_url('/');
+    }
+
+    public function getMerchantLogo(): string
+    {
+        return (string) $this->getMeta('merchant_logo');
+    }
+
+    public function isVerified(): bool
+    {
+        return (bool) $this->getMeta('verified');
+    }
+
+    public function isNewUserOnly(): bool
+    {
+        return (bool) $this->getMeta('new_user');
+    }
+
+    public function getTerms(): array
+    {
+        $raw = (string) $this->getMeta('terms');
+        $lines = preg_split('/\r\n|\r|\n/', $raw);
+
+        return array_values(array_filter(array_map('trim', (array) $lines)));
+    }
+
+    public function getDiscountCategories(): array
+    {
+        $raw = (string) $this->getMeta('discount_cats');
+        $rows = [];
+
+        foreach (preg_split('/\r\n|\r|\n/', $raw) as $line) {
+            $line = trim((string) $line);
+            if ($line === '') {
+                continue;
+            }
+            $parts = array_map('trim', explode('|', $line));
+            $rows[] = [
+                'category' => (string) ($parts[0] ?? ''),
+                'percent'  => (float) ($parts[1] ?? 0),
+            ];
+        }
+
+        return $rows;
+    }
+
+    /* ---------------------------------------------------------------------
      * Slave-only meta
      * ------------------------------------------------------------------- */
 
@@ -683,7 +742,15 @@ class Coupon
 
     public function getMeta(string $key)
     {
-        return get_post_meta($this->id, self::META_PREFIX . $key, true);
+        $value = get_post_meta($this->id, self::META_PREFIX . $key, true);
+
+        if ($value === '' || $value === null || $value === false) {
+            // Backwards compatibility: the admin metabox historically stored
+            // keys with a redundant "coupon_" segment (e.g. _coupon_coupon_type).
+            $value = get_post_meta($this->id, self::META_PREFIX . 'coupon_' . $key, true);
+        }
+
+        return $value;
     }
 
     public function setMeta(string $key, $value): void
