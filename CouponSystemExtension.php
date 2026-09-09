@@ -61,7 +61,11 @@ class CouponSystemExtension extends AbstractExtension
         add_action('jankx/my_account/register_sub_pages', [$this, 'registerAccountSubPage']);
 
         // Always register blocks so ServerSideRender works in editor
-        $this->registerBlocks();
+        if (did_action('init')) {
+            $this->registerBlocks();
+        } else {
+            add_action('init', [$this, 'registerBlocks']);
+        }
 
         // Frontend assets on the my-account and cart pages.
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);

@@ -18,7 +18,34 @@ class AvailableCouponsBlock extends Block
         $manager = CouponManager::get_instance();
         $coupons = $manager->findAvailableForDisplay($limit);
 
+        $isEditor = (defined('REST_REQUEST') && REST_REQUEST && !empty($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/block-renderer/') !== false) || (is_admin() && !wp_doing_ajax());
+
         if (empty($coupons)) {
+            if ($isEditor) {
+                $wrapperAttrs = get_block_wrapper_attributes([
+                    'class' => 'jankx-available-coupons is-editor-preview',
+                ]);
+
+                $output = sprintf('<div %s>', $wrapperAttrs);
+                if (!empty($title)) {
+                    $output .= '<div class="jankx-available-coupons-header">';
+                    $output .= '<h4 class="jankx-available-coupons-title">' . esc_html($title) . '</h4>';
+                    $output .= '</div>';
+                }
+                $output .= '<div class="jankx-available-coupons-body">';
+                $output .= '<div class="jankx-coupons-pills-list">';
+                $output .= '<div class="jankx-coupon-pill"><span class="jankx-coupon-pill-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 9V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3a2 2 0 0 1 0 4v3a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3a2 2 0 0 1 0-4zm-8.5-1.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm-3 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm.8-6.8a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06z"/></svg></span><span class="jankx-coupon-pill-text">Giảm 300K cho đơn từ VND 2 triệu</span></div>';
+                $output .= '<div class="jankx-coupon-pill"><span class="jankx-coupon-pill-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 9V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3a2 2 0 0 1 0 4v3a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3a2 2 0 0 1 0-4zm-8.5-1.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm-3 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm.8-6.8a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06z"/></svg></span><span class="jankx-coupon-pill-text">Giảm 10% cho đơn từ VND 500K</span></div>';
+                $output .= '</div>';
+                if ($showMore) {
+                    $output .= '<button type="button" class="jankx-coupons-more-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></button>';
+                }
+                $output .= '</div>';
+                $output .= '</div>';
+
+                return $output;
+            }
+
             return '';
         }
 
