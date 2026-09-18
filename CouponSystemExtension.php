@@ -190,14 +190,7 @@ class CouponSystemExtension extends AbstractExtension
             return;
         }
 
-        \Jankx\Extensions\MyAccount\MyAccountExtension::registerSubPage('coupons', [
-            'label' => __('Mã giảm giá', 'jankx'),
-            'icon' => '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg>',
-            'priority' => 20,
-            'extension' => 'coupon-system',
-            'show_in_nav' => true,
-            'callback' => [new \Jankx\Extensions\CouponSystem\Blocks\AccountTabCouponsBlock(), 'render'],
-        ]);
+        \Jankx\Extensions\MyAccount\MyAccountExtension::registerSubPageClass(new \Jankx\Extensions\CouponSystem\MyAccount\CouponsSubPage());
     }
 
     /**

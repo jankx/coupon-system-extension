@@ -7,7 +7,6 @@
     "icon": "tickets",
     "description": "Display user's coupons and promotional codes.",
     "textdomain": "jankx",
-    "parent": ["jankx/account-content"],
     "attributes": {
         "jankxHideOnUltrawide": { "type": "boolean", "default": false },
         "jankxHideOnPc": { "type": "boolean", "default": false },
