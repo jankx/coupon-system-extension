@@ -140,6 +140,26 @@ class CouponSystemExtension extends AbstractExtension
                 $block->setBlockPath($blockDir);
                 $block->boot();
                 $block->register();
+            } elseif ($blockName === 'jankx/coupons-collectable' && !\WP_Block_Type_Registry::get_instance()->is_registered($blockName)) {
+                $block = new \Jankx\Extensions\CouponSystem\Blocks\CouponsCollectableBlock($blockDir);
+                $block->setBlockPath($blockDir);
+                $block->boot();
+                $block->register();
+            } elseif ($blockName === 'jankx/coupons-mine' && !\WP_Block_Type_Registry::get_instance()->is_registered($blockName)) {
+                $block = new \Jankx\Extensions\CouponSystem\Blocks\CouponsMineBlock($blockDir);
+                $block->setBlockPath($blockDir);
+                $block->boot();
+                $block->register();
+            } elseif ($blockName === 'jankx/coupons-used' && !\WP_Block_Type_Registry::get_instance()->is_registered($blockName)) {
+                $block = new \Jankx\Extensions\CouponSystem\Blocks\CouponsUsedBlock($blockDir);
+                $block->setBlockPath($blockDir);
+                $block->boot();
+                $block->register();
+            } elseif ($blockName === 'jankx/coupons-unused' && !\WP_Block_Type_Registry::get_instance()->is_registered($blockName)) {
+                $block = new \Jankx\Extensions\CouponSystem\Blocks\CouponsUnusedBlock($blockDir);
+                $block->setBlockPath($blockDir);
+                $block->boot();
+                $block->register();
             } elseif ($blockName && !\WP_Block_Type_Registry::get_instance()->is_registered($blockName)) {
                 register_block_type_from_metadata($blockDir);
             }

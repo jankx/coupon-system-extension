@@ -1,18 +1,13 @@
-import { useBlockProps } from '@wordpress/block-editor';
-import ServerSideRender from '@wordpress/server-side-render';
-import { __ } from '@wordpress/i18n';
+import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
 
-export default function Edit( { attributes } ) {
+export default function Edit() {
     const blockProps = useBlockProps({
-        className: 'jankx-account-tab-coupons is-editor-preview',
+        className: 'jankx-account-tab-coupons',
     });
 
     return (
         <div {...blockProps}>
-            <ServerSideRender
-                block="jankx/account-tab-coupons"
-                attributes={attributes}
-            />
+            <InnerBlocks />
         </div>
     );
 }

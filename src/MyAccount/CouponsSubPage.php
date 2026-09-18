@@ -33,6 +33,11 @@ class CouponsSubPage extends AbstractSubPage
 
     public function getContent(): string
     {
-        return '<!-- wp:jankx/account-tab-coupons /-->';
+        return '<!-- wp:jankx/account-tab-coupons -->'
+            . '<!-- wp:jankx/coupons-collectable /-->'
+            . '<!-- wp:jankx/coupons-mine /-->'
+            . '<!-- wp:jankx/coupons-used /-->'
+            . '<!-- wp:jankx/coupons-unused /-->'
+            . '<!-- /wp:jankx/account-tab-coupons -->';
     }
 }

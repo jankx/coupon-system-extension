@@ -1,13 +1,14 @@
 {
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "apiVersion": 3,
-    "name": "jankx/account-tab-coupons",
-    "title": "Coupons Tab",
+    "name": "jankx/coupons-unused",
+    "title": "Coupons unused",
     "category": "jankx",
     "icon": "tickets",
-    "description": "Display user's coupons and promotional codes.",
+    "description": "Coupons unused panel.",
     "textdomain": "jankx",
     "editorScript": "file:./build/index.tsx.js",
+    "parent": ["jankx/account-tab-coupons"],
     "attributes": {
         "jankxHideOnUltrawide": { "type": "boolean", "default": false },
         "jankxHideOnPc": { "type": "boolean", "default": false },
@@ -15,11 +16,5 @@
         "jankxHideOnMobile": { "type": "boolean", "default": false },
         "jankxFlexGrow": { "type": "boolean", "default": false }
     },
-    "supports": {
-        "html": false,
-        "inserter": false,
-        "align": false,
-        "spacing": false
-    },
-    "allowedBlocks": ["jankx/coupons-collectable", "jankx/coupons-mine", "jankx/coupons-used", "jankx/coupons-unused"]
+    "supports": { "html": false, "inserter": false }
 }
