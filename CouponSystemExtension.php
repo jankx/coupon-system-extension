@@ -255,7 +255,7 @@ class CouponSystemExtension extends AbstractExtension
         );
 
         wp_localize_script('jankx-account-coupons', 'jankxCoupon', [
-            'restUrl' => esc_url_raw(rest_url(CouponController::REST_NAMESPACE)),
+            'restUrl' => esc_url_raw(rest_url(CouponController::REST_NAMESPACE . '/')),
             'nonce'   => wp_create_nonce('wp_rest'),
             'i18n'    => [
                 'error'     => __('Đã xảy ra lỗi, vui lòng thử lại.', 'jankx'),
