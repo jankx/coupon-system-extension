@@ -123,7 +123,7 @@
 
                 applyBtn.disabled = true;
                 showMessage('');
-                api('cart/apply', { code: code }).then(function (res) {
+                api('cart/apply', 'POST', { code: code }).then(function (res) {
                     if (!res.success) {
                         showMessage(res.message || COUPON.i18n.error || 'Error.', true);
                         applyBtn.disabled = false;
