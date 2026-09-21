@@ -237,18 +237,20 @@ class CouponSystemExtension extends AbstractExtension
             return;
         }
 
+        $version = $this->get_version();
+
         wp_enqueue_style(
             'jankx-account-coupons',
             $this->get_extension_url() . '/assets/account-coupons.css',
             [],
-            filemtime($this->get_extension_path() . '/assets/account-coupons.css')
+            $version
         );
 
         wp_enqueue_script(
             'jankx-account-coupons',
             $this->get_extension_url() . '/assets/account-coupons.js',
             [],
-            filemtime($this->get_extension_path() . '/assets/account-coupons.js'),
+            $version,
             true
         );
 
