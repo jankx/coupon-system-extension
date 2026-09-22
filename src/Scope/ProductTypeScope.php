@@ -33,12 +33,7 @@ class ProductTypeScope implements CouponScopeStrategy
          *
          * @param array[] $options
          */
-        $options = apply_filters('jankx/coupon/product_type_scope/post_types', [
-            ['value' => 'tour',             'label' => __('Tour du lịch', 'jankx')],
-            ['value' => 'product',          'label' => __('Sản phẩm', 'jankx')],
-            ['value' => 'experience',       'label' => __('Trải nghiệm', 'jankx')],
-            ['value' => 'destination_tour', 'label' => __('Tour điểm đến', 'jankx')],
-        ]);
+        $options = apply_filters('jankx/coupon/product_type_scope/post_types', []);
 
         return [
             'type'        => 'select2_static',
