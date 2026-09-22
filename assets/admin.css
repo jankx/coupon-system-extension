@@ -151,3 +151,27 @@
         max-width: 100%;
     }
 }
+
+/* Select2 Customizations for Coupon Meta Box */
+.jankx-scope-picker-row .select2-container .select2-selection--multiple {
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    min-height: 32px;
+}
+.jankx-scope-picker-row .select2-container--default.select2-container--focus .select2-selection--multiple {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+}
+.jankx-scope-picker-row .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #f0f0f1;
+    border: 1px solid #c3c4c7;
+    border-radius: 3px;
+    color: #2c3338;
+    padding: 2px 6px;
+    margin-top: 5px;
+}
+.jankx-scope-picker-row .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: #b32d2e;
+    margin-right: 4px;
+    font-weight: bold;
+}

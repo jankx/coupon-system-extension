@@ -4,6 +4,7 @@ namespace Jankx\Extensions\CouponSystem\Meta;
 use Jankx\Extensions\CouponSystem\Coupon;
 use Jankx\Extensions\CouponSystem\CouponManager;
 use Jankx\Extensions\CouponSystem\PostTypes\CouponPostType;
+use Jankx\Extensions\CouponSystem\Scope\CouponScopeRegistry;
 
 class CouponMetaBoxes
 {
@@ -79,6 +80,13 @@ class CouponMetaBoxes
                     <?php if ($coupon->isSlave() && in_array($key, $this->getMasterOnlyFields(), true)) {
                         continue;
                     } ?>
+                    <?php
+                    // The apply_values field is rendered as a dedicated scope picker.
+                    if ($key === 'coupon_apply_values') {
+                        $this->renderApplyValuesScopeRow($post->ID, $values);
+                        continue;
+                    }
+                    ?>
                     <tr>
                         <th scope="row">
                             <label for="<?php echo esc_attr($key); ?>">
@@ -128,6 +136,11 @@ class CouponMetaBoxes
 
         $fields = $this->getFields();
         foreach ($fields as $key => $field) {
+            // apply_values is handled separately below via the scope strategy.
+            if ($key === 'coupon_apply_values') {
+                continue;
+            }
+
             $type = $field['type'] ?? 'text';
 
             if ($type === 'checkbox') {
@@ -150,6 +163,20 @@ class CouponMetaBoxes
 
             update_post_meta($postId, Coupon::META_PREFIX . $key, $value);
         }
+
+        // Delegate apply_values sanitization to the active scope strategy.
+        $appliesTo = isset($_POST['coupon_applies_to'])
+            ? sanitize_key(wp_unslash($_POST['coupon_applies_to']))
+            : 'all';
+        $rawValues = isset($_POST['coupon_apply_values_ids'])
+            ? (array) $_POST['coupon_apply_values_ids']
+            : [];
+
+        $registry = CouponScopeRegistry::getInstance();
+        $scope    = $registry->get($appliesTo);
+        $cleanValues = $scope ? $scope->sanitizeValues($rawValues) : [];
+
+        update_post_meta($postId, Coupon::META_PREFIX . 'apply_values', $cleanValues);
 
         // Ensure a unique code, auto-generating when empty.
         $code = strtoupper(sanitize_key(get_post_meta($postId, Coupon::META_PREFIX . 'code', true)));
@@ -184,20 +211,55 @@ class CouponMetaBoxes
             return;
         }
 
+        // WP bundles Select2 — enqueue it.
+        wp_enqueue_style('select2');
+        wp_enqueue_script('select2');
+
         wp_enqueue_style(
             'jankx-coupon-admin',
             $extension->get_extension_url() . '/assets/admin.css',
-            [],
-            '1.0.0'
+            ['select2'],
+            '1.1.0'
         );
 
         wp_enqueue_script(
             'jankx-coupon-admin',
             $extension->get_extension_url() . '/assets/admin.js',
-            [],
-            '1.0.0',
+            ['jquery', 'select2'],
+            '1.1.0',
             true
         );
+
+        // Collect existing apply_values with post titles for Select2 pre-population.
+        global $post;
+        $existingValues = [];
+        if ($post) {
+            $coupon = new Coupon($post->ID);
+            $appliesTo = $coupon->getAppliesTo();
+            $storedValues = $coupon->getApplyValues();
+
+            if (!empty($storedValues) && $appliesTo === 'product') {
+                foreach ($storedValues as $id) {
+                    $title = get_the_title((int) $id);
+                    if ($title) {
+                        $existingValues[] = ['id' => (int) $id, 'text' => $title];
+                    }
+                }
+            } elseif (!empty($storedValues) && $appliesTo === 'product_type') {
+                foreach ($storedValues as $slug) {
+                    $existingValues[] = ['id' => $slug, 'text' => $slug];
+                }
+            }
+        }
+
+        $registry = CouponScopeRegistry::getInstance();
+
+        wp_localize_script('jankx-coupon-admin', 'jankxCouponAdmin', [
+            'scopes'         => $registry->getPickerConfigs(),
+            'existingValues' => $existingValues,
+            'restUrl'        => esc_url_raw(rest_url()),
+            'nonce'          => wp_create_nonce('wp_rest'),
+        ]);
     }
 
     protected function getMasterOnlyFields(): array
@@ -231,6 +293,8 @@ class CouponMetaBoxes
 
     protected function getFields(): array
     {
+        $registry = CouponScopeRegistry::getInstance();
+
         return [
             'coupon_type' => [
                 'label' => __('Loại giảm giá', 'jankx'),
@@ -289,18 +353,15 @@ class CouponMetaBoxes
             'coupon_applies_to' => [
                 'label' => __('Áp dụng cho', 'jankx'),
                 'type' => 'select',
-                'options' => [
-                    'all' => __('Tất cả sản phẩm', 'jankx'),
-                    'product_type' => __('Loại sản phẩm cụ thể', 'jankx'),
-                    'product' => __('Sản phẩm cụ thể', 'jankx'),
-                ],
-                'description' => __('Phạm vi sản phẩm được áp dụng mã.', 'jankx'),
+                // Options are dynamically generated from the scope registry.
+                'options' => $registry->getOptions(),
+                'description' => __('Phạm vi sản phẩm / dịch vụ được áp dụng mã. Sau khi chọn, bộ chọn bên dưới sẽ thay đổi tương ứng.', 'jankx'),
             ],
+            // Placeholder entry — rendered as a dedicated scope picker, not a plain field.
             'coupon_apply_values' => [
-                'label' => __('Giá trị áp dụng', 'jankx'),
-                'type' => 'list',
-                'list_type' => 'int',
-                'description' => __('Với "Loại sản phẩm": nhập slug loại (tour, product...). Với "Sản phẩm cụ thể": nhập ID, phân cách bởi dấu phẩy.', 'jankx'),
+                'label' => __('Mục áp dụng', 'jankx'),
+                'type' => 'scope_picker',
+                'description' => '',
             ],
             'coupon_user_ids' => [
                 'label' => __('Chỉ định người dùng (ID)', 'jankx'),
@@ -464,6 +525,24 @@ class CouponMetaBoxes
                 );
                 break;
         }
+    }
+
+    protected function renderApplyValuesScopeRow(int $postId, array $values): void
+    {
+        $appliesTo = $values['coupon_applies_to'] ?? 'all';
+        ?>
+        <tr id="row-coupon-apply-values" class="jankx-scope-picker-row" style="display: none;">
+            <th scope="row">
+                <label for="coupon_apply_values_ids">
+                    <?php esc_html_e('Mục áp dụng', 'jankx'); ?>
+                </label>
+            </th>
+            <td>
+                <select id="coupon_apply_values_ids" name="coupon_apply_values_ids[]" multiple="multiple" style="width: 100%; max-width: 400px;"></select>
+                <p class="description" id="coupon_apply_values_desc"></p>
+            </td>
+        </tr>
+        <?php
     }
 
     protected function getMetaValues(int $postId): array

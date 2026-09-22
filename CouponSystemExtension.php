@@ -45,6 +45,9 @@ class CouponSystemExtension extends AbstractExtension
 
     public function register_hooks(): void
     {
+        // Boot scope strategies.
+        \Jankx\Extensions\CouponSystem\Scope\CouponScopeRegistry::getInstance()->boot();
+
         $postType = new \Jankx\Extensions\CouponSystem\PostTypes\CouponPostType();
         $postType->register();
 

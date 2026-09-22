@@ -2,6 +2,7 @@
 namespace Jankx\Extensions\CouponSystem;
 
 use Jankx\Extensions\CouponSystem\PostTypes\CouponPostType;
+use Jankx\Extensions\CouponSystem\Scope\CouponScopeRegistry;
 
 /**
  * Coupon model backed by the jankx_coupon post type.
@@ -510,32 +511,33 @@ class Coupon
             return $errors;
         }
 
-        if (!empty($items) && $this->getAppliesTo() !== 'all') {
-            $matched = false;
-            $appliesTo = $this->getAppliesTo();
-            $values = $this->getApplyValues();
+        $appliesTo = $this->getAppliesTo();
+        $values    = $this->getApplyValues();
+        $scope     = CouponScopeRegistry::getInstance()->get($appliesTo);
 
-            foreach ($items as $item) {
-                $productId = (int) ($item['product_id'] ?? 0);
-                if (!$productId) {
-                    continue;
-                }
-
-                if ($appliesTo === 'product_type') {
-                    $postType = get_post_type($productId);
-                    if (in_array($postType, $values, true)) {
+        // Delegate item-level scope matching to the registered strategy.
+        // AllScope::matches() always returns true so we skip the loop entirely —
+        // it would pass every item anyway. For narrowing scopes (product,
+        // product_type, …) we require at least one item to match. Unknown scope
+        // IDs that haven't been registered are treated as "deny".
+        if ($scope && !empty($items)) {
+            // AllScope: always passes — no loop needed.
+            if ($appliesTo !== 'all') {
+                $matched = false;
+                foreach ($items as $item) {
+                    if ($scope->matches($item, $values)) {
                         $matched = true;
                         break;
                     }
-                } elseif ($appliesTo === 'product' && in_array($productId, $values, true)) {
-                    $matched = true;
-                    break;
+                }
+
+                if (!$matched) {
+                    $errors[] = __('Mã giảm giá không áp dụng cho sản phẩm trong giỏ hàng.', 'jankx');
                 }
             }
-
-            if (!$matched) {
-                $errors[] = __('Mã giảm giá không áp dụng cho sản phẩm trong giỏ hàng.', 'jankx');
-            }
+        } elseif (!$scope && !empty($items) && $appliesTo !== 'all') {
+            // Fallback: unrecognised scope ID — deny.
+            $errors[] = __('Mã giảm giá không áp dụng cho sản phẩm trong giỏ hàng.', 'jankx');
         }
 
         return $errors;
