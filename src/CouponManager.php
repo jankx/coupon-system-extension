@@ -483,6 +483,25 @@ class CouponManager
         }
 
         $context = array_merge($this->buildCartContext(), $context);
+        $userId = (int) ($context['user_id'] ?? get_current_user_id());
+
+        // Auto-collect: if coupon is a master (collectable) and user hasn't collected yet.
+        if ($userId && !$coupon->isSlave() && $coupon->isCollectable()) {
+            $existing = $this->findUserSlave($coupon->getId(), $userId);
+            if ($existing) {
+                $coupon = $existing;
+            } else {
+                $limit = $coupon->getPerUserLimit();
+                $owned = $this->countUserSlaves($coupon->getId(), $userId);
+                if ($limit === 0 || $owned < $limit) {
+                    $slave = $coupon->collect($userId);
+                    if ($slave) {
+                        $coupon = $slave;
+                    }
+                }
+            }
+        }
+
         $errors = $coupon->validate($context);
         if (!empty($errors)) {
             return ['success' => false, 'message' => implode(' ', $errors)];
@@ -669,6 +688,37 @@ class CouponManager
         ]);
 
         return (int) $query->found_posts;
+    }
+
+    protected function findUserSlave(int $masterId, int $userId): ?Coupon
+    {
+        $query = new \WP_Query([
+            'post_type'      => CouponPostType::POST_TYPE,
+            'post_status'    => 'publish',
+            'posts_per_page' => 1,
+            'fields'         => 'ids',
+            'meta_query'     => [
+                'relation' => 'AND',
+                [
+                    'key'     => Coupon::META_PREFIX . 'master_id',
+                    'value'   => $masterId,
+                    'compare' => '=',
+                ],
+                [
+                    'key'     => Coupon::META_PREFIX . 'user_id',
+                    'value'   => $userId,
+                    'compare' => '=',
+                ],
+            ],
+        ]);
+
+        if (empty($query->posts)) {
+            return null;
+        }
+
+        $slave = new Coupon((int) $query->posts[0]);
+
+        return $slave->exists() ? $slave : null;
     }
 
     /**
