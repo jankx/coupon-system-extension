@@ -27,6 +27,25 @@
             "padding": true
         }
     },
+    "usesContext": ["postId", "postType"],
+    "providesContext": {
+        "jankx/couponId":          "couponId",
+        "jankx/couponCode":        "couponCode",
+        "jankx/couponLabel":       "couponLabel",
+        "jankx/couponCollectable": "couponCollectable",
+        "jankx/couponCollected":   "couponCollected"
+    },
+    "allowedBlocks": [
+        "jankx/coupon-pill-icon",
+        "jankx/coupon-pill-label",
+        "core/paragraph",
+        "core/image"
+    ],
+    "template": [
+        ["jankx/coupon-pill-icon", {}],
+        ["jankx/coupon-pill-label", {}]
+    ],
+    "templateLock": false,
     "editorScript": "file:./build/index.tsx.js",
     "style": "file:./build/style.css",
     "editorStyle": "file:./build/editor.css"

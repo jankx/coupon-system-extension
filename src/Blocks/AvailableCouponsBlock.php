@@ -20,6 +20,10 @@ class AvailableCouponsBlock extends Block
 
         $isEditor = (defined('REST_REQUEST') && REST_REQUEST && !empty($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/block-renderer/') !== false) || (is_admin() && !wp_doing_ajax());
 
+        // Detect whether the user has placed inner blocks to use as coupon pill template.
+        $hasInnerTemplate = $block instanceof \WP_Block
+            && !empty($block->parsed_block['innerBlocks']);
+
         if (empty($coupons)) {
             if ($isEditor) {
                 $wrapperAttrs = get_block_wrapper_attributes([
@@ -34,8 +38,24 @@ class AvailableCouponsBlock extends Block
                 }
                 $output .= '<div class="jankx-available-coupons-body">';
                 $output .= '<div class="jankx-coupons-pills-list">';
-                $output .= '<div class="jankx-coupon-pill"><span class="jankx-coupon-pill-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 9V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3a2 2 0 0 1 0 4v3a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3a2 2 0 0 1 0-4zm-8.5-1.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm-3 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm.8-6.8a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06z"/></svg></span><span class="jankx-coupon-pill-text">Giảm 300K cho đơn từ VND 2 triệu</span></div>';
-                $output .= '<div class="jankx-coupon-pill"><span class="jankx-coupon-pill-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 9V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3a2 2 0 0 1 0 4v3a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3a2 2 0 0 1 0-4zm-8.5-1.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm-3 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm.8-6.8a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06z"/></svg></span><span class="jankx-coupon-pill-text">Giảm 10% cho đơn từ VND 500K</span></div>';
+                
+                if ($hasInnerTemplate) {
+                    $output .= $this->renderInnerBlocksForCoupon(
+                        $block->parsed_block['innerBlocks'],
+                        [
+                            'jankx/couponId'          => 0,
+                            'jankx/couponCode'        => 'DEMO10',
+                            'jankx/couponLabel'       => 'Giảm 10% cho đơn từ 500K',
+                            'jankx/couponCollectable' => false,
+                            'jankx/couponCollected'   => false,
+                        ],
+                        $block->context ?? []
+                    );
+                } else {
+                    $output .= '<div class="jankx-coupon-pill"><span class="jankx-coupon-pill-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 9V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3a2 2 0 0 1 0 4v3a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3a2 2 0 0 1 0-4zm-8.5-1.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm-3 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm.8-6.8a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06z"/></svg></span><span class="jankx-coupon-pill-text">Giảm 300K cho đơn từ VND 2 triệu</span></div>';
+                    $output .= '<div class="jankx-coupon-pill"><span class="jankx-coupon-pill-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 9V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3a2 2 0 0 1 0 4v3a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3a2 2 0 0 1 0-4zm-8.5-1.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm-3 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm.8-6.8a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06z"/></svg></span><span class="jankx-coupon-pill-text">Giảm 10% cho đơn từ VND 500K</span></div>';
+                }
+                
                 $output .= '</div>';
                 if ($showMore) {
                     $output .= '<button type="button" class="jankx-coupons-more-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></button>';
@@ -78,24 +98,48 @@ class AvailableCouponsBlock extends Block
                 }
             }
 
-            $output .= sprintf(
-                '<div class="jankx-coupon-pill%s" data-coupon-id="%d" data-coupon-code="%s" data-coupon-collectable="%s" data-coupon-collected="%s">',
-                $isUserCollected ? ' is-collected' : '',
+            $pillClasses = 'jankx-coupon-pill' . ($isUserCollected ? ' is-collected' : '');
+            $pillDataAttrs = sprintf(
+                'data-coupon-id="%d" data-coupon-code="%s" data-coupon-collectable="%s" data-coupon-collected="%s"',
                 (int) $coupon->getId(),
                 esc_attr($coupon->getCode()),
                 $isCollectable ? '1' : '0',
                 $isUserCollected ? '1' : '0'
             );
 
-            // Ticket Icon with notch and % symbol
-            $output .= '<span class="jankx-coupon-pill-icon" aria-hidden="true">';
-            $output .= '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">';
-            $output .= '<path d="M21 9V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3a2 2 0 0 1 0 4v3a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3a2 2 0 0 1 0-4zm-8.5-1.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm-3 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm.8-6.8a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06z"/>';
-            $output .= '</svg>';
-            $output .= '</span>';
+            if ($hasInnerTemplate) {
+                $couponContext = [
+                    'jankx/couponId'          => (int) $coupon->getId(),
+                    'jankx/couponCode'        => $coupon->getCode(),
+                    'jankx/couponLabel'       => $pillLabel,
+                    'jankx/couponCollectable' => $isCollectable,
+                    'jankx/couponCollected'   => $isUserCollected,
+                ];
 
-            $output .= '<span class="jankx-coupon-pill-text">' . esc_html($pillLabel) . '</span>';
-            $output .= '</div>';
+                $output .= sprintf('<div class="%s" %s>', esc_attr($pillClasses), $pillDataAttrs);
+                $output .= $this->renderInnerBlocksForCoupon(
+                    $block->parsed_block['innerBlocks'],
+                    $couponContext,
+                    $block->context ?? []
+                );
+                $output .= '</div>';
+            } else {
+                $output .= sprintf(
+                    '<div class="%s" %s>',
+                    esc_attr($pillClasses),
+                    $pillDataAttrs
+                );
+
+                // Ticket Icon with notch and % symbol
+                $output .= '<span class="jankx-coupon-pill-icon" aria-hidden="true">';
+                $output .= '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">';
+                $output .= '<path d="M21 9V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3a2 2 0 0 1 0 4v3a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3a2 2 0 0 1 0-4zm-8.5-1.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm-3 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm.8-6.8a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06z"/>';
+                $output .= '</svg>';
+                $output .= '</span>';
+
+                $output .= '<span class="jankx-coupon-pill-text">' . esc_html($pillLabel) . '</span>';
+                $output .= '</div>';
+            }
         }
 
         $output .= '</div>'; // .jankx-coupons-pills-list
@@ -116,6 +160,22 @@ class AvailableCouponsBlock extends Block
         $output .= '</div>'; // .jankx-available-coupons
 
         return $output;
+    }
+
+    /**
+     * Render the inner block template for a single coupon.
+     */
+    protected function renderInnerBlocksForCoupon(array $innerBlocks, array $couponCtx, array $parentCtx = []): string
+    {
+        $mergedContext = array_merge($parentCtx, $couponCtx);
+        $html = '';
+
+        foreach ($innerBlocks as $parsedBlock) {
+            $block = new \WP_Block($parsedBlock, $mergedContext);
+            $html .= $block->render();
+        }
+
+        return $html;
     }
 
     protected function resolvePostId($block): int
