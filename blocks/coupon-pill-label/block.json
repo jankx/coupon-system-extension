@@ -1,0 +1,24 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "jankx/coupon-pill-label",
+    "title": "Coupon Pill Label",
+    "category": "jankx",
+    "icon": "text",
+    "description": "Discount label rendered inside every coupon pill.",
+    "textdomain": "jankx",
+    "parent": ["jankx/available-coupons"],
+    "usesContext": [
+        "jankx/couponId",
+        "jankx/couponCode",
+        "jankx/couponLabel",
+        "jankx/couponCollectable",
+        "jankx/couponCollected"
+    ],
+    "supports": {
+        "html": false,
+        "multiple": true
+    },
+    "render": "file:./render.php",
+    "editorScript": "file:./build/index.tsx.js"
+}
