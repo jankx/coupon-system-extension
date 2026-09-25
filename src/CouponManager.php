@@ -220,44 +220,40 @@ class CouponManager
      * Active master coupons for frontend bar/pills display.
      *
      * @param int $limit
+     * @param int $contextPostId Post the coupons should apply to (0 = no scope check).
      * @return Coupon[]
      */
-    public function findAvailableForDisplay(int $limit = 10): array
+    public function findAvailableForDisplay(int $limit = 10, int $contextPostId = 0): array
     {
         $query = new \WP_Query([
             'post_type'      => CouponPostType::POST_TYPE,
             'post_status'    => 'publish',
-            'posts_per_page' => $limit,
+            'posts_per_page' => max($limit * 5, 50),
             'no_found_rows'  => true,
             'orderby'        => 'date',
             'order'          => 'DESC',
-            'meta_query'     => [
-                'relation' => 'AND',
-                [
-                    'key'     => Coupon::META_PREFIX . 'master_id',
-                    'compare' => 'NOT EXISTS',
-                ],
-                [
-                    'relation' => 'OR',
-                    [
-                        'key'     => Coupon::META_PREFIX . 'is_collectable',
-                        'value'   => '1',
-                        'compare' => '=',
-                    ],
-                    [
-                        'key'     => Coupon::META_PREFIX . 'is_global',
-                        'value'   => '1',
-                        'compare' => '=',
-                    ],
-                ],
-            ],
         ]);
 
         $coupons = [];
         foreach ($query->posts as $post) {
-            $coupon = new Coupon($post->ID);
-            if ($coupon->exists() && $coupon->getEffectiveStatus() === Coupon::STATUS_ACTIVE) {
-                $coupons[] = $coupon;
+            $coupon = new Coupon((int) $post->ID);
+
+            if (!$coupon->exists() || $coupon->isSlave()) {
+                continue;
+            }
+
+            if ($coupon->getEffectiveStatus() !== Coupon::STATUS_ACTIVE) {
+                continue;
+            }
+
+            if (!$coupon->isAdvertisable() || !$coupon->appliesToPost($contextPostId)) {
+                continue;
+            }
+
+            $coupons[] = $coupon;
+
+            if (count($coupons) >= $limit) {
+                break;
             }
         }
 

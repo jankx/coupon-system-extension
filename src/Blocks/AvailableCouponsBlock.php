@@ -16,7 +16,7 @@ class AvailableCouponsBlock extends Block
         $title = isset($attributes['title']) ? sanitize_text_field($attributes['title']) : '';
 
         $manager = CouponManager::get_instance();
-        $coupons = $manager->findAvailableForDisplay($limit);
+        $coupons = $manager->findAvailableForDisplay($limit, $this->resolvePostId($block));
 
         $isEditor = (defined('REST_REQUEST') && REST_REQUEST && !empty($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/block-renderer/') !== false) || (is_admin() && !wp_doing_ajax());
 
@@ -116,6 +116,25 @@ class AvailableCouponsBlock extends Block
         $output .= '</div>'; // .jankx-available-coupons
 
         return $output;
+    }
+
+    protected function resolvePostId($block): int
+    {
+        if ($block instanceof \WP_Block && !empty($block->context['postId'])) {
+            return (int) $block->context['postId'];
+        }
+
+        $postId = get_the_ID();
+        if ($postId) {
+            return (int) $postId;
+        }
+
+        global $post;
+        if ($post && isset($post->ID)) {
+            return (int) $post->ID;
+        }
+
+        return 0;
     }
 
     protected function renderModal(array $coupons, int $userId): string

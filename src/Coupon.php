@@ -223,6 +223,61 @@ class Coupon
         return is_array($roles) ? array_map('sanitize_key', $roles) : [];
     }
 
+    /**
+     * Whether the coupon may be advertised publicly (product pages, banners …).
+     * Restricted coupons (explicit user IDs / roles) are only shown to the
+     * matching current user.
+     */
+    public function isAdvertisable(): bool
+    {
+        if ($this->isGlobal()) {
+            return true;
+        }
+
+        $allowedIds  = $this->getAllowedUserIds();
+        $allowedRole = $this->getAllowedRoles();
+
+        if (empty($allowedIds) && empty($allowedRole)) {
+            return true;
+        }
+
+        $userId = get_current_user_id();
+        if (!$userId) {
+            return false;
+        }
+
+        if (in_array($userId, $allowedIds, true)) {
+            return true;
+        }
+
+        $user = get_userdata($userId);
+        $roles = $user ? (array) $user->roles : [];
+
+        return (bool) array_intersect($allowedRole, $roles);
+    }
+
+    /**
+     * Whether this coupon applies to the given post (scope check).
+     */
+    public function appliesToPost(int $postId): bool
+    {
+        if (!$postId) {
+            return true;
+        }
+
+        $appliesTo = $this->getAppliesTo();
+        if ($appliesTo === '' || $appliesTo === 'all') {
+            return true;
+        }
+
+        $scope = CouponScopeRegistry::getInstance()->get($appliesTo);
+        if (!$scope) {
+            return false;
+        }
+
+        return $scope->matches(['product_id' => $postId], $this->getApplyValues());
+    }
+
     public function getStatus(): string
     {
         return (string) $this->getMeta('status');
