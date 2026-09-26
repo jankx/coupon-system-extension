@@ -60,6 +60,8 @@ class CouponSystemExtension extends AbstractExtension
         // Coupon detail page (frontend renderer + feedback AJAX).
         (new \Jankx\Extensions\CouponSystem\Frontend\CouponDetailRenderer())->register();
 
+        (new \Jankx\Extensions\CouponSystem\Frontend\CouponQueryFilter())->register();
+
         // REST API for coupons, collection and cart apply.
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
