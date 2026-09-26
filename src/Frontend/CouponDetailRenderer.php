@@ -94,7 +94,7 @@ class CouponDetailRenderer
         $args = [
             'post_type'      => CouponPostType::POST_TYPE,
             'post_status'    => 'publish',
-            'posts_per_page' => 4,
+            'posts_per_page' => 8,
             'orderby'        => 'date',
             'order'          => 'DESC',
             'no_found_rows'  => true,
@@ -103,8 +103,19 @@ class CouponDetailRenderer
             $args['post__not_in'] = [$current->getId()];
         }
 
-        $posts = get_posts($args);
-        if (empty($posts)) {
+        $related = [];
+        foreach (get_posts($args) as $post) {
+            $item = new Coupon($post->ID);
+            if ($item->getEffectiveStatus() !== Coupon::STATUS_ACTIVE) {
+                continue;
+            }
+            $related[] = [$post, $item];
+            if (count($related) >= 4) {
+                break;
+            }
+        }
+
+        if (empty($related)) {
             return '';
         }
 
@@ -113,7 +124,7 @@ class CouponDetailRenderer
         <aside class="jd-related" aria-label="<?php echo esc_attr__('Related coupons', 'jankx'); ?>">
             <h3 class="jd-sidebar-title"><?php echo esc_html__('Related Coupons', 'jankx'); ?></h3>
             <div class="jd-related__list">
-                <?php foreach ($posts as $post) : $item = new Coupon($post->ID); ?>
+                <?php foreach ($related as [$post, $item]) : ?>
                     <a class="jd-related-card" href="<?php echo esc_url(get_permalink($post->ID)); ?>">
                         <span class="jd-related-card__logo"><?php echo esc_html($item->getMerchantName()); ?></span>
                         <span class="jd-related-card__body">
@@ -162,6 +173,10 @@ class CouponDetailRenderer
         $merchantLogo = $coupon->getMerchantLogo();
         $discountLabel = $this->getDiscountLabel($coupon);
         $code         = $coupon->getCode();
+        $status       = $coupon->getEffectiveStatus();
+        $isActive     = $status === Coupon::STATUS_ACTIVE;
+        $statusLabel  = Coupon::getStatusLabel($status);
+        $expiry       = $coupon->getExpiryTimestamp();
 
         ob_start();
         ?>
@@ -184,15 +199,15 @@ class CouponDetailRenderer
                 </div>
             </div>
 
-            <div class="jd-offer-box">
+            <div class="jd-offer-box<?php echo $isActive ? '' : ' jd-offer-box--inactive'; ?>">
                 <div class="jd-offer-box__message">
-                    <span class="jd-offer-box__icon" aria-hidden="true">&#10003;</span>
-                    <span><?php echo esc_html__('Offer Activated', 'jankx'); ?></span>
+                    <span class="jd-offer-box__icon" aria-hidden="true"><?php echo $isActive ? '&#10003;' : '!'; ?></span>
+                    <span><?php echo $isActive ? esc_html__('Offer Activated', 'jankx') : esc_html($statusLabel); ?></span>
                 </div>
                 <?php if ($code) : ?>
                     <div class="jd-offer-box__code">
                         <code><?php echo esc_html($code); ?></code>
-                        <button type="button" class="jd-copy-code jd-btn jd-btn-sm" data-code="<?php echo esc_attr($code); ?>">
+                        <button type="button" class="jd-copy-code jd-btn jd-btn-sm" data-code="<?php echo esc_attr($code); ?>"<?php echo $isActive ? '' : ' disabled'; ?>>
                             <?php echo esc_html__('Copy', 'jankx'); ?>
                         </button>
                     </div>
@@ -204,6 +219,12 @@ class CouponDetailRenderer
             </div>
 
             <ul class="jd-meta">
+                <?php if (!$isActive) : ?>
+                    <li class="jd-meta__item jd-meta__status">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                        <?php echo esc_html($statusLabel); ?>
+                    </li>
+                <?php endif; ?>
                 <?php if ($coupon->isVerified()) : ?>
                     <li class="jd-meta__item jd-meta__verified">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
@@ -216,10 +237,14 @@ class CouponDetailRenderer
                         <?php echo esc_html__('New User', 'jankx'); ?>
                     </li>
                 <?php endif; ?>
-                <?php if ($coupon->getExpiryTimestamp()) : ?>
+                <?php if ($expiry) : ?>
                     <li class="jd-meta__item jd-meta__expiry">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                        <?php printf(esc_html__('Valid Till: %s', 'jankx'), esc_html(wp_date('M j, Y', $coupon->getExpiryTimestamp()))); ?>
+                        <?php if ($isActive) : ?>
+                            <?php printf(esc_html__('Valid Till: %s', 'jankx'), esc_html(wp_date('M j, Y', $expiry))); ?>
+                        <?php else : ?>
+                            <?php printf(esc_html__('Expired: %s', 'jankx'), esc_html(wp_date('M j, Y', $expiry))); ?>
+                        <?php endif; ?>
                     </li>
                 <?php endif; ?>
             </ul>
@@ -416,10 +441,17 @@ class CouponDetailRenderer
 .jd-offer-box__code{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0}
 .jd-offer-box__code code{font-size:20px;font-weight:800;letter-spacing:2px;color:#1e3a8a;background:#dbeafe;border-radius:8px;padding:8px 16px}
 .jd-offer-box__action{margin-top:4px}
+.jd-offer-box--inactive{border-color:#fca5a5;background:#fef2f2}
+.jd-offer-box--inactive .jd-offer-box__message{color:#991b1b}
+.jd-offer-box--inactive .jd-offer-box__icon{background:#dc2626}
+.jd-offer-box--inactive .jd-offer-box__code code{color:#991b1b;background:#fee2e2}
+.jd-offer-box--inactive .jd-copy-code{opacity:.55;cursor:not-allowed;pointer-events:none}
 .jd-meta{list-style:none;display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 0;padding:0}
 .jd-meta__item{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#475569;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:999px;padding:6px 12px}
 .jd-meta__verified svg{color:#16a34a}
 .jd-meta__expiry svg{color:#f59e0b}
+.jd-meta__status{background:#fef2f2;border-color:#fecaca;color:#b91c1c}
+.jd-meta__status svg{color:#dc2626}
 .jd-telegram{display:flex;align-items:center;gap:16px;margin:16px 0;background:linear-gradient(135deg,#0284c7,#0369a1);border-radius:14px;padding:18px 22px;color:#fff;text-decoration:none;box-shadow:0 2px 6px rgba(3,105,161,.25)}
 .jd-telegram__text{flex:1;display:flex;flex-direction:column;gap:2px}
 .jd-telegram__text strong{font-size:16px;letter-spacing:.5px}
