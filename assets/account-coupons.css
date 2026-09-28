@@ -77,11 +77,14 @@
     flex-direction: column;
     justify-content: center;
     gap: 4px;
-    min-width: 130px;
-    padding: 16px 20px;
+    flex: 0 0 140px;
+    width: 140px;
+    padding: 16px 12px;
     background: linear-gradient(135deg, #1A1F71, #283593);
     color: #fff;
     text-align: center;
+    overflow: hidden;
+    word-break: break-word;
 }
 
 .jankx-coupon-card-used .jankx-coupon-card-left,
