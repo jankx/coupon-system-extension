@@ -28,7 +28,10 @@ class CheckoutIntegrationTest extends TestCase
             $filters[$entry['tag']] = $entry['callback'];
         }
 
-        $this->assertSame([$integration, 'applyDiscount'], $filters['jankx/ecommerce/cart/discount']);
+        $this->assertSame([$integration, 'applyDiscount'], $filters['jankx/ecommerce/cart/coupon_discount']);
+        $this->assertSame([$integration, 'handleApplyCoupon'], $filters['jankx/ecommerce/cart/coupon/apply']);
+        $this->assertSame([$integration, 'handleRemoveCoupon'], $filters['jankx/ecommerce/cart/coupon/remove']);
+        $this->assertSame([$integration, 'getAppliedCoupons'], $filters['jankx/ecommerce/cart/coupons']);
         $this->assertSame([$integration, 'validateAppliedCoupon'], $filters['jankx/ecommerce/checkout/validate_customer']);
 
         $actions = [];
@@ -101,6 +104,57 @@ class CheckoutIntegrationTest extends TestCase
 
         $this->assertCount(1, $result);
         $this->assertStringContainsString('tối thiểu', $result[0]);
+    }
+
+    public function test_handle_apply_coupon_delegates_to_manager()
+    {
+        $this->setCart('unit', 500000, []);
+        $id = $this->seedMaster([
+            Coupon::META_PREFIX . 'type'   => Coupon::TYPE_PERCENT,
+            Coupon::META_PREFIX . 'amount' => 10,
+        ]);
+
+        $result = $this->integration()->handleApplyCoupon(
+            ['success' => false, 'message' => 'default'],
+            \Jankx\Extensions\Ecommerce\Cart\Cart::get_instance(),
+            'SALE10'
+        );
+
+        $this->assertTrue($result['success']);
+        $this->assertSame(50000.0, $result['discount']);
+        $this->assertSame($id, $GLOBALS['__transients'][$this->sessionKey()]);
+    }
+
+    public function test_handle_remove_coupon_clears_session()
+    {
+        $this->setCart('unit', 500000, []);
+        $id = $this->seedMaster();
+        $GLOBALS['__transients'][$this->sessionKey()] = $id;
+
+        $result = $this->integration()->handleRemoveCoupon(
+            ['success' => false, 'message' => 'default'],
+            \Jankx\Extensions\Ecommerce\Cart\Cart::get_instance(),
+            ''
+        );
+
+        $this->assertTrue($result['success']);
+        $this->assertArrayNotHasKey($this->sessionKey(), $GLOBALS['__transients']);
+    }
+
+    public function test_get_applied_coupons_lists_applied_coupon()
+    {
+        $this->setCart('unit', 500000, []);
+        $id = $this->seedMaster([
+            Coupon::META_PREFIX . 'type'   => Coupon::TYPE_PERCENT,
+            Coupon::META_PREFIX . 'amount' => 10,
+        ]);
+        $GLOBALS['__transients'][$this->sessionKey()] = $id;
+
+        $coupons = $this->integration()->getAppliedCoupons([], \Jankx\Extensions\Ecommerce\Cart\Cart::get_instance());
+
+        $this->assertCount(1, $coupons);
+        $this->assertSame($id, $coupons[0]['id']);
+        $this->assertSame(50000.0, $coupons[0]['discount']);
     }
 
     public function test_on_checkout_completed_does_nothing_without_coupon()

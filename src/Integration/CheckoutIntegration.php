@@ -6,7 +6,12 @@ use Jankx\Extensions\CouponSystem\CouponManager;
 /**
  * Bridges the coupon system into the base-ecommerce cart & checkout flow:
  *
- *  - Reduces the cart total through the `jankx/ecommerce/cart/discount` filter.
+ *  - Provides the flexible coupon API of base-ecommerce:
+ *    applies/removes coupons through `jankx/ecommerce/cart/coupon/apply`
+ *    and `jankx/ecommerce/cart/coupon/remove`, lists them through
+ *    `jankx/ecommerce/cart/coupons`.
+ *  - Reduces the cart total (order-value by default) through the
+ *    `jankx/ecommerce/cart/coupon_discount` filter.
  *  - Blocks checkout when an applied coupon is no longer valid.
  *  - Marks the applied coupon as used once an order is completed.
  *
@@ -16,7 +21,10 @@ class CheckoutIntegration
 {
     public function register(): void
     {
-        add_filter('jankx/ecommerce/cart/discount', [$this, 'applyDiscount'], 10, 2);
+        add_filter('jankx/ecommerce/cart/coupon_discount', [$this, 'applyDiscount'], 10, 2);
+        add_filter('jankx/ecommerce/cart/coupon/apply', [$this, 'handleApplyCoupon'], 10, 3);
+        add_filter('jankx/ecommerce/cart/coupon/remove', [$this, 'handleRemoveCoupon'], 10, 3);
+        add_filter('jankx/ecommerce/cart/coupons', [$this, 'getAppliedCoupons'], 10, 2);
         add_filter('jankx/ecommerce/checkout/validate_customer', [$this, 'validateAppliedCoupon'], 20, 2);
         add_action('jankx/ecommerce/checkout/completed', [$this, 'onCheckoutCompleted'], 10);
     }
@@ -34,6 +42,63 @@ class CheckoutIntegration
         $couponDiscount = CouponManager::get_instance()->getAppliedDiscount($discount, $cart);
 
         return (float) ($discount + $couponDiscount);
+    }
+
+    /**
+     * Apply a coupon code through the base-ecommerce coupon API.
+     *
+     * @param array{success: bool, message: string} $result
+     * @param object                                $cart
+     * @param string                                $code
+     */
+    public function handleApplyCoupon(array $result, $cart, string $code): array
+    {
+        if (!$this->isEcommerceLoaded() || trim($code) === '') {
+            return $result;
+        }
+
+        return CouponManager::get_instance()->apply($code);
+    }
+
+    /**
+     * Remove the applied coupon through the base-ecommerce coupon API.
+     *
+     * @param array{success: bool, message: string} $result
+     * @param object                                $cart
+     * @param string                                $code
+     */
+    public function handleRemoveCoupon(array $result, $cart, string $code): array
+    {
+        if (!$this->isEcommerceLoaded()) {
+            return $result;
+        }
+
+        return CouponManager::get_instance()->removeApplied();
+    }
+
+    /**
+     * Expose applied coupons to the cart payload.
+     *
+     * @param array  $coupons
+     * @param object $cart
+     */
+    public function getAppliedCoupons(array $coupons, $cart): array
+    {
+        if (!$this->isEcommerceLoaded()) {
+            return $coupons;
+        }
+
+        $coupon = CouponManager::get_instance()->getApplied();
+        if (!$coupon) {
+            return $coupons;
+        }
+
+        $context = $this->buildCartContext($cart);
+        $coupons[] = array_merge($coupon->toArray(), [
+            'discount' => $coupon->getDiscount((float) ($context['subtotal'] ?? 0)),
+        ]);
+
+        return $coupons;
     }
 
     /**
