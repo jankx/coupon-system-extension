@@ -206,6 +206,13 @@
 .jankx-available-coupons {
     margin: 16px 0;
     font-family: inherit;
+    min-width: 0;
+    overflow-x: scroll;
+    scrollbar-width: none;
+}
+
+.jankx-available-coupons::-webkit-scrollbar {
+    display: none;
 }
 
 .jankx-available-coupons-header {

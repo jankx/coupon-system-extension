@@ -1,6 +1,17 @@
 .jankx-available-coupons {
     margin: 16px 0;
     font-family: inherit;
+    // Inside flex rows (e.g. "Mã ưu đãi" label + this block) the block is a
+    // flex item whose automatic minimum size is its full pills max-content,
+    // so it grows past the viewport. A scroll container has auto min size 0,
+    // which lets it shrink and scroll instead of overflowing the page.
+    min-width: 0;
+    overflow-x: scroll;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
 
     .jankx-available-coupons-header {
         margin-bottom: 8px;
