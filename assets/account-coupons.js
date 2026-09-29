@@ -48,6 +48,44 @@
     }
 
     /* ------------------------------------------------------------------
+     * Live search: filter cards by code / title on every panel
+     * ---------------------------------------------------------------- */
+    function initSearch(scope) {
+        var input = scope.querySelector('.jankx-coupon-search-input');
+        if (!input) {
+            return;
+        }
+
+        input.addEventListener('input', function () {
+            var q = input.value.trim().toLowerCase();
+
+            scope.querySelectorAll('.jankx-coupon-panel').forEach(function (panel) {
+                var cards  = panel.querySelectorAll('.jankx-coupon-card');
+                var empty  = panel.querySelector('.jankx-empty-state');
+                var hasCards = cards.length > 0;
+                var visible = 0;
+
+                cards.forEach(function (card) {
+                    var code  = (card.querySelector('.jankx-coupon-code') || {}).textContent || '';
+                    var title = (card.querySelector('.jankx-coupon-title') || {}).textContent || '';
+                    var match = !q
+                        || code.toLowerCase().indexOf(q) !== -1
+                        || title.toLowerCase().indexOf(q) !== -1;
+
+                    card.style.display = match ? '' : 'none';
+                    if (match) {
+                        visible++;
+                    }
+                });
+
+                if (empty) {
+                    empty.style.display = q ? (hasCards && visible === 0 ? '' : 'none') : (hasCards ? 'none' : '');
+                }
+            });
+        });
+    }
+
+    /* ------------------------------------------------------------------
      * Collect + copy buttons
      * ---------------------------------------------------------------- */
     function initActions(scope) {
@@ -225,6 +263,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.jankx-tab-coupons').forEach(function (scope) {
             initTabs(scope);
+            initSearch(scope);
             initActions(scope);
         });
         initCartCoupon();

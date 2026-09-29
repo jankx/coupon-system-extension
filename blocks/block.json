@@ -20,6 +20,5 @@
         "inserter": false,
         "align": false,
         "spacing": false
-    },
-    "allowedBlocks": ["jankx/coupons-collectable", "jankx/coupons-mine", "jankx/coupons-used", "jankx/coupons-unused"]
+    }
 }

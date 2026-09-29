@@ -34,6 +34,11 @@ class AccountTabCouponsBlock extends Block
         $output = sprintf('<div %s>', $wrapperAttrs);
         $output .= '<h2 class="jankx-section-title">' . esc_html__('Kho mã giảm giá', 'jankx') . '</h2>';
 
+        $output .= '<div class="jankx-coupon-search">';
+        $output .= '<svg class="jankx-coupon-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>';
+        $output .= '<input type="search" class="jankx-coupon-search-input" placeholder="' . esc_attr__('Tìm theo mã hoặc tiêu đề...', 'jankx') . '" aria-label="' . esc_attr__('Tìm mã giảm giá', 'jankx') . '">';
+        $output .= '</div>';
+
         $output .= '<div class="jankx-coupon-tabs" role="tablist">';
         $output .= $this->renderTabButton('collectable', __('Thu thập', 'jankx'), count($groups['collectable']), true);
         $output .= $this->renderTabButton('mine', __('Của tôi', 'jankx'), count($groups['mine']));

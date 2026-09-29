@@ -1,6 +1,42 @@
 /* Nobitour Coupon System - Frontend Styles */
 
 /* ---------- My Account: coupon tabs ---------- */
+.jankx-coupon-search {
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.jankx-coupon-search-icon {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    color: #9CA3AF;
+    pointer-events: none;
+}
+
+.jankx-coupon-search-input {
+    width: 100%;
+    max-width: 420px;
+    padding: 10px 14px 10px 36px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fff;
+    color: #111827;
+    font-size: 14px;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.jankx-coupon-search-input::placeholder {
+    color: #9CA3AF;
+}
+
+.jankx-coupon-search-input:focus {
+    outline: none;
+    border-color: #1A1F71;
+    box-shadow: 0 0 0 3px rgba(26, 31, 113, .12);
+}
+
 .jankx-coupon-tabs {
     display: flex;
     gap: 8px;
