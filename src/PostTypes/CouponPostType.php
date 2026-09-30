@@ -80,7 +80,7 @@ class CouponPostType
             'hierarchical' => false,
             'menu_position' => 30,
             'menu_icon' => 'dashicons-tickets-alt',
-            'supports' => ['title', 'editor', 'thumbnail', 'custom-fields'],
+            'supports' => ['title', 'editor', 'thumbnail'],
         ];
 
         register_post_type(self::POST_TYPE, $args);
