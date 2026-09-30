@@ -8,7 +8,7 @@ namespace Jankx\Extensions\CouponSystem\Scope;
  * The UI picker is a Select2 AJAX control that searches across
  * the post types configured via the filter `jankx/coupon/product_scope/post_types`.
  *
- * Default searchable post types: tour, product, experience, destination_tour.
+ * Default searchable post types: tour, product.
  *
  * @package Jankx\Extensions\CouponSystem\Scope
  */
